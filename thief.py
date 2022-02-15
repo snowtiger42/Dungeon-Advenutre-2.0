@@ -4,7 +4,7 @@ from hero import Hero
 
 class Thief(Hero):
     """
-    A class the handles information for the Adventurer
+    A class the handles information for the Thief
     """
 
     def __init__(self):
