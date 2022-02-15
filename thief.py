@@ -2,28 +2,63 @@ import random
 from hero import Hero
 
 
-class Thief:
+class Thief(Hero):
     """
     A class the handles information for the Adventurer
     """
 
-    def __init__(self, name, game):
-        self.__name = name
-        self.__game = game
+    def __init__(self):
+        super(self.__class__, self).__init__()
         self.__pillars = []
         self.__vision_p = 0
         self.__health_p = 0
-
-        self.__hp = random.randrange(75, 100)
-        self.__max_hp = self.__hp
-
         self.__vision = 0
+
+    def get_hp(self):
+        self.__max_hp = self.__current_hp
+        return self.__max_hp
+
+    def set_hp(self):
+        self.__current_hp = random.randrange(75, 100)
+
+    def get_attack_damage_range(self):
+        return self.__attack_damage_range
+
+    def set_attack_damage_range(self):
+        self.__attack_damage_range = random.randrange(30, 40)
+
+    def get_attack_speed(self):
+        return self.__attack_speed
+
+    def set_attack_speed(self):
+        self.__attack_speed = 7
+
+    def get_chance_to_hit(self):
+        return self.__chance_to_hit
+
+    def set_chance_to_hit(self):
+        self.__chance_to_hit = random.uniform(.80, .95)
+
+    def get_chance_to_dodge(self):
+        return self.__chance_to_dodge
+
+    def set_chance_to_dodge(self):
+        self.__chance_to_dodge = random.uniform(.50, .75)
+
+    def get_chance_to_block(self):
+        return self.__chance_to_block
+
+    def set_chance_to_block(self):
+        self.__chance_to_block = random.uniform(.1, .25)
+
+    # def pit_damage(self):
+    #     pass
 
     def is_dead(self):
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
-        return self.__hp <= 0
+        return self.__current_hp <= 0
 
     def get_name(self):
         """
@@ -58,16 +93,16 @@ class Thief:
         Adventurer's health by a random number.
         :returns: True if potion was used, False otherwise
         """
-        heal = random.randrange(5, 15)
+        heal = random.randrange(25, 50)
 
         if self.__health_p > 0:
             self.__health_p -= 1
 
-            self.__hp += heal
-            if self.__hp >= self.__max_hp:
-                self.__hp = self.__max_hp
+            self.__current_hp += heal
+            if self.__current_hp >= self.__max_hp:
+                self.__current_hp = self.__max_hp
 
-            self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__hp}.")
+            self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
             return True
 
         elif self.__health_p <= 0:
@@ -116,8 +151,8 @@ class Thief:
         """
         Reduces HP by the indicated amount and makes an announcement.
         """
-        self.__hp -= damage
-        self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__hp} hp!")
+        self.__current_hp -= damage
+        self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
 
     def exit(self):
         """
@@ -138,7 +173,7 @@ class Thief:
 
         # produce a content line for each status item
         name_str = f"Name: {self.__name}"
-        hp_str = f"HP: {self.__hp} / {self.__max_hp}"
+        hp_str = f"HP: {self.__current_hp} / {self.__max_hp}"
         healthp_str = f"Health potions: {self.__health_p}"
         visionp_str = f"Vision potions: {self.__vision_p}"
         pillar_string = f"Pillars found: {self.__pillars}"
