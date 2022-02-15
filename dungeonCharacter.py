@@ -6,12 +6,13 @@ class DungeonCharacter(object, metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def __init__(self, name, game, max_hp, chance_to_dodge, chance_to_hit):
+    def __init__(self, name, game, max_hp, current_hp, chance_to_dodge, chance_to_hit):
         if self.__class__ == DungeonCharacter:
             raise Exception('I am abstract!')
         self.__name = name
         self.__game = game
         self.__max_hp = max_hp
+        self.__current_hp = current_hp
         self.__chance_to_dodge = chance_to_dodge
         self.__chance_to_hit = chance_to_hit
 
