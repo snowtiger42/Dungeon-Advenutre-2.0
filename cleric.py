@@ -4,7 +4,7 @@ from hero import Hero
 
 class Cleric(Hero):
     """
-    A class the handles information for the Adventurer
+    A class the handles information for the Cleric
     """
 
     def __init__(self):
