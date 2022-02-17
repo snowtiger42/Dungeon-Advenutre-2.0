@@ -1,7 +1,6 @@
 from clear_screen import ClearScreen
 from sound_fx import SoundFx
 from sound_option import SoundOption
-from art import Art
 
 
 class Instructions:
