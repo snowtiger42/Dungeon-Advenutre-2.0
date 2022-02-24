@@ -81,20 +81,20 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def get_attack_speed(self):
         return self.__attack_speed
 
-    def set_attack_speed(self):
-        self.__attack_speed = 4
+    def set_attack_speed(self, new_speed):
+        self.__attack_speed = new_speed
 
     def get_chance_to_hit_min(self):
         return self.__chance_to_hit_min
 
-    def set_chance_to_hit_min(self):
-        self.__chance_to_hit_min = .60
+    def set_chance_to_hit_min(self, new_hit_min):
+        self.__chance_to_hit_min = new_hit_min
 
     def get_chance_to_hit_max(self):
         return self.__chance_to_hit_max
 
-    def set_chance_to_hit_max(self):
-        self.__chance_to_hit_max = .75
+    def set_chance_to_hit_max(self, new_hit_max):
+        self.__chance_to_hit_max = new_hit_max
 
     def get_chance_to_hit(self):
         return self.__chance_to_hit
@@ -105,14 +105,14 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def get_chance_to_dodge_max(self):
         return self.__chance_to_dodge_max
 
-    def set_chance_to_dodge_max(self):
-        self.__chance_to_dodge_max = .30
+    def set_chance_to_dodge_max(self, new_chance_to_dodge_min):
+        self.__chance_to_dodge_max = new_chance_to_dodge_min
 
     def get_chance_to_dodge_min(self):
         return self.__chance_to_dodge_min
 
-    def set_chance_to_dodge_min(self):
-        self.__chance_to_dodge_min = .20
+    def set_chance_to_dodge_min(self, new_chance_to_dodge_min):
+        self.__chance_to_dodge_min = new_chance_to_dodge_min
 
     def get_chance_to_dodge(self):
         return self.__chance_to_dodge
@@ -146,10 +146,16 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
-        return (self.__current_hp <= 0), sys.exit()
+        return (self.__current_hp <= 0), sys.exit()  # display Game Over message, sys.exit() in main code
 
+    # determines whether an attack is a hit or a miss. Returns true if attack is successful.
+    # Generates random number. Compares random number to attack chance.
     def attack(self):
-        pass
+        set_attack()
+        curr_attack = get_attack()
+        random_number = randrange(0, 100)
+        return curr_attack >= random_number
+
 
     def take_damage(self, damage, source):
         """
