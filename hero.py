@@ -6,11 +6,14 @@ import random
 
 
 class Hero(DungeonCharacter):
-    def __init__(self, chance_to_block_min, chance_to_block_max, chance_to_block):
+    def __init__(self, name, min_hp, max_hp, attack_min, attack_max,
+                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
+                 chance_to_dodge_max, chance_to_dodge, chance_to_block_min, chance_to_block_max, chance_to_block):
         # if self.__class__ == Hero:
         #     raise Exception('I am abstract!')
-        super().__init__("Kevin", 100, 200, range(100, 200), range(100, 200), 30, 80, range(30, 80), 4, .60, .75
-                         , random.uniform(.60, .75), .20, .30, random.uniform(.20, .30))
+        super().__init__(name, min_hp, max_hp, attack_min, attack_max,
+                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
+                 chance_to_dodge_max, chance_to_dodge)
 
         self.__chance_to_block_min = chance_to_block_min
         self.__chance_to_block_max = chance_to_block_max
@@ -19,7 +22,6 @@ class Hero(DungeonCharacter):
         self.__vision_p = 0
         self.__health_p = 0
         self.__vision = 0
-
 
     def get_chance_to_block_min(self):
         return self.__chance_to_block_min
@@ -33,37 +35,15 @@ class Hero(DungeonCharacter):
     def set_chance_to_block_max(self):
         self.__chance_to_block_max = .50
 
-
-
     def get_chance_to_block(self):
         return self.__chance_to_block
 
     def set_chance_to_block(self):
         self.__chance_to_block = random.uniform(self.__chance_to_block_min, self.__chance_to_block_max)
 
-    # @abstractmethod
-    # def pit_damage(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def add_health_potion(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def use_health_potion(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def add_vision_potion(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def use_vision_potion(self):
-    #     pass
-
-
-
-
+    @abstractmethod
+    def special_move(self):
+        pass
 
     def earn_pillar(self, pillar):
         """
@@ -95,16 +75,18 @@ class Hero(DungeonCharacter):
         Adventurer's health by a random number.
         :returns: True if potion was used, False otherwise
         """
-        heal = random.randrange(25, 50)
+        heal = 50
 
         if self.__health_p > 0:
             self.__health_p -= 1
-            self.__current_hp += heal
+            new_hp = self.get_current_hp() + heal
 
-            if self.__current_hp >= self.__max_hp:
-                self.__current_hp = self.__max_hp
+            if new_hp >= self.get_generated_hp():
+                self.set_current_hp(self.get_generated_hp())
+            else:
+                self.set_current_hp(new_hp)
 
-            print(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+            print(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
             # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
             return True
 
@@ -157,20 +139,13 @@ class Hero(DungeonCharacter):
 
             # self.__game.announce("The effects of your vision potion fade a little.")
 
-    # def take_damage(self, damage, source):
-    #     """
-    #     Reduces HP by the indicated amount and makes an announcement.
-    #     """
-    #     self.__current_hp -= damage
-    #     print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
-    #
-    #     # self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
-
     def exit(self):
         """
         Ends the game if the adventurer has all four pillars.  Makes an announcement either way.
         """
         if len(self.__pillars) >= 4:
+            print(
+                "You have acquired the knowledge of all four pillars of OO! You leave the dungeon a better programmer!")
             sys.exit()
             # self.__game.end_game()
             # return
@@ -181,19 +156,23 @@ class Hero(DungeonCharacter):
             #     "You feel like you could escape from\nthis room if only you knew more\nabout programming.")
             return
 
-
     def __str__(self):
         """
         Returns a string representation of the Hero.
         """
+        prefix = super().__str__()
 
-        # super().__str__()
+        # if prefix is None:
+        #     return '{}'.format(prefix)
+        # p = format(prefix).replace("['", '').replace(',', "\n").replace("]", " " * 27).replace("'", " |", 10)
+        p = format(prefix).replace(',', "" +"\n").replace("('", "").replace("'", " ").replace(")", "     ")
+
+        block_str = f"Block Chance: {round(self.__chance_to_block_min * 100)}% to {round(self.__chance_to_block_max * 100)}% "
         healthp_str = f"Health potions: {self.__health_p}"
         visionp_str = f"Vision potions: {self.__vision_p}"
         pillar_string = f"Pillars found: {self.__pillars}"
-        # super().__str__()
 
-        status_items = [healthp_str, visionp_str, pillar_string]
+        status_items = [p, block_str, healthp_str, visionp_str, pillar_string]
 
         line_size = 0
         for line in status_items:
@@ -217,94 +196,89 @@ class Hero(DungeonCharacter):
 
         return output_str
 
-
     # debug code, only used for unit tests
     def is_pillar_in_inventory(self, pillar):
         return pillar in self.__pillars
 
 
-    def special_move(self):
-        pass
-
-
-b = Hero(.30, .50, random.uniform(.30, .50))
-
-print(b)
-
-
-print("\n------------------------print adventurer status ('empty', try using either potion)-------------------------")
-b.use_health_potion()
-b.use_vision_potion()
-
-print(b)
-
-print("\n------------------------print adventurer status (+1 potion)-------------------------")
-b.add_health_potion()
-print(b)
-
-print("\n------------------------print adventurer status (take damage 1st)-------------------------")
-b.take_damage(1, "angry gnat")
-print(b)
-
+# b = Hero("Kevin", 100, 200, 30, 80, 4, .60, .75, random.uniform(.60, .75), .20, .30, random.uniform(.20, .30), .30, .50,
+#          random.uniform(.30, .50))
+#
+# print(b)
+#
+# print("\n------------------------print adventurer status ('empty', try using either potion)-------------------------")
+# b.use_health_potion()
+# b.use_vision_potion()
+#
+# print(b)
+#
+# print("\n------------------------print adventurer status (+1 potion)-------------------------")
+# b.add_health_potion()
+# print(b)
+#
+# print("\n------------------------print adventurer status (take damage 1st)-------------------------")
+# b.take_damage(1, "angry gnat")
+# print(b)
+#
 # print("\n------------------------print adventurer status (take 1st health potion)-------------------------")
 # b.use_health_potion()
 # print(b)
 
 
-print("\n------------------------print adventurer status (Add two of each potion)-------------------------")
-b.add_health_potion()
-b.add_health_potion()
-b.add_vision_potion()
-b.add_vision_potion()
-
-print(b)
-
-
-print("\n------------------------print adventurer status (Add 'A' to the Pillars + adding an extra 'A' and a false 'z')"
-      "-------------------------")
-b.earn_pillar("A")
-try:
-    b.earn_pillar("A")
-    print("should have failed.")
-except:
-    pass
-
-try:
-    b.earn_pillar("z")
-    print("should have failed.")
-except:
-    pass
-
-
-print(b)
-
-
-
-print("\n------------------------print adventurer status (TIME TO DIE!!!)-------------------------")
-print(b)
-b.take_damage(20, "legendary pit")
-b.take_damage(20, "legendary pit")
-b.take_damage(20, "legendary pit")
-b.take_damage(20, "legendary pit")
-b.take_damage(20, "legendary pit")
-b.take_damage(2000, "extra legendary pit")
-print(b)
-
-
-
-print("\n------------------------print adventurer exit (doesn't have all Pillars of OO)-------------------------\n")
-b.exit()
-
-print(b)
-
-
-
-print("\n------------------------print adventurer status (Add 'E', 'I', 'P')-------------------------")
-b.earn_pillar("P")
-b.earn_pillar("I")
-b.earn_pillar("E")
-
-print(b)
-
-print("\n------------------------print adventurer exit (has all Pillars of OO)-------------------------\n")
-b.exit()
+# print("\n------------------------print adventurer status (Add two of each potion)-------------------------")
+# b.add_health_potion()
+# b.add_health_potion()
+# b.add_vision_potion()
+# b.add_vision_potion()
+#
+# print(b)
+#
+#
+# print("\n------------------------print adventurer status (Add 'A' to the Pillars + adding an extra 'A' and a false 'z')"
+#       "-------------------------")
+# b.earn_pillar("A")
+# try:
+#     b.earn_pillar("A")
+#     print("should have failed.")
+# except:
+#     pass
+#
+# try:
+#     b.earn_pillar("z")
+#     print("should have failed.")
+# except:
+#     pass
+#
+#
+# print(b)
+#
+#
+#
+# print("\n------------------------print adventurer status (TIME TO DIE!!!)-------------------------")
+# print(b)
+# b.take_damage(20, "legendary pit")
+# b.take_damage(20, "legendary pit")
+# b.take_damage(20, "legendary pit")
+# b.take_damage(20, "legendary pit")
+# b.take_damage(20, "legendary pit")
+# b.take_damage(2000, "extra legendary pit")
+# print(b)
+#
+#
+#
+# print("\n------------------------print adventurer exit (doesn't have all Pillars of OO)-------------------------\n")
+# b.exit()
+#
+# print(b)
+#
+#
+#
+# print("\n------------------------print adventurer status (Add 'E', 'I', 'P')-------------------------")
+# b.earn_pillar("P")
+# b.earn_pillar("I")
+# b.earn_pillar("E")
+#
+# print(b)
+#
+# print("\n------------------------print adventurer exit (has all Pillars of OO)-------------------------\n")
+# b.exit()
