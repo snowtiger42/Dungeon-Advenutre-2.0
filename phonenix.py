@@ -1,11 +1,31 @@
+<<<<<<< Updated upstream
 class Phoenix(Monster):
     def __init__(self, diff):
         super(self.__class__, self).__init__()
         self.__diff = diff
+=======
+from abc import ABCMeta, abstractmethod
+import random
+from monster import Monster
 
-    def get_diff(self):
+"""
+self, name, min_hp, max_hp, attack_min, attack_max,
+                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_dodge_min,
+                 chance_to_dodge_max, chance_to_regenerate_min, chance_to_regenerate_max
+"""
+
+
+class Phoenix(Monster):
+    def __init__(self, diff):
+        super().__init__("Phoenix", 250, 333, 40, 60, 100, 40, 60, 3, 60, 1, 5)
+        self.__diff = diff  # what is diff?
+
+>>>>>>> Stashed changes
+
+    def get_diff(self): # what is diff?
         self.__diff.get()
 
+<<<<<<< Updated upstream
     def get_hp(self):
         self.__max_hp = self.__current_hp
         return self.__max_hp
@@ -69,6 +89,40 @@ class Phoenix(Monster):
 from abc import ABCMeta, abstractmethod
 # from monster import Monster
 from random import randrange
+=======
+    # if self.is_dead():
+    #     self.__max_hp = 100  # generate new stats
+
+    # p = Phoenix(1, "Phoenix")
+    # print(p)
+
+    def rebirth(self):
+        # self.__rebirth = rebirth
+        self.set_current_hp()
+
+
+if __name__ == "__main__":
+    test = Phoenix(10)
+    test.take_damage(500, test)
+    # print(test.get_current_hp())
+    if test.is_dead():
+        test.rebirth()
+        print(test.get_current_hp())
+
+    # overriding 'name' method
+    # def get_name(self):
+    #     return self.__name
+    #
+    # def set_name(self, name):
+    #     self.__name = "Phoenix"
+
+    # overriding 'is_dead' method
+    # def is_dead(self):
+        # if self.__current_hp <= 0:
+        #     return self.__current_hp <= 0
+        # else:
+        # return self.__current_hp <= 0
+>>>>>>> Stashed changes
 
 # class Phoenix(Monster):
 # overriding 'name' method
@@ -89,5 +143,8 @@ def is_dead(self):
     if (monster_hp <= 0): return True
     else: return False
 
+<<<<<<< Updated upstream
 # def throw_fireball(self):
 # pass
+=======
+>>>>>>> Stashed changes
