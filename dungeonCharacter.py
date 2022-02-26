@@ -1,18 +1,17 @@
 from abc import ABCMeta, abstractmethod
 from abc import abstractmethod
+from mock_game import MockGame as Game
+import sys
+import random
+import numpy as np
 
 
-<<<<<<< Updated upstream
-class DungeonCharacter(metaclass=ABCMeta):
-=======
 class DungeonCharacter(object, metaclass=ABCMeta):
     # class DungeonCharacter:
 
-    def __init__(self, name, min_hp, max_hp, attack_min, attack_max,
-                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_dodge_min,
-                 chance_to_dodge_max):
-        # don't need generated_hp, current_hp, attack_damage_range
-        # chance_to_hit or chance_to_dodge passed in as arguments
+    def __init__(self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, attack_damage_range
+                 , attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
+                 chance_to_dodge_max, chance_to_dodge):
         # if self.__class__ == DungeonCharacter:
         #     raise Exception('I am abstract!')
         self.__name = name
@@ -21,7 +20,7 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         self.__max_hp = max_hp
 
         self.__generated_hp = random.randrange(self.__min_hp, self.__max_hp)
-        self.__current_hp = self.__generated_hp  # here it is
+        self.__current_hp = self.__generated_hp
         # self.__generated_hp = generated_hp
         # self.__current_hp = current_hp
         self.__attack_min = attack_min
@@ -32,10 +31,10 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         self.__attack_speed = attack_speed
         self.__chance_to_dodge_min = chance_to_dodge_min
         self.__chance_to_dodge_max = chance_to_dodge_max
-        self.__chance_to_dodge = random.randrange(self.__chance_to_dodge_min, self.__chance_to_dodge_max)
+        self.__chance_to_dodge = chance_to_dodge
         self.__chance_to_hit_min = chance_to_hit_min
         self.__chance_to_hit_max = chance_to_hit_max
-        self.__chance_to_hit = random.randrange(self.__chance_to_hit_min, self.__chance_to_hit_max)
+        self.__chance_to_hit = chance_to_hit
 
     def get_min_hp(self):
         return self.__min_hp
@@ -121,6 +120,8 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def set_chance_to_dodge(self):
         self.__chance_to_dodge = random.uniform(self.__chance_to_dodge_min, self.__chance_to_dodge_max)
 
+    def rebirth(self):
+        self.__current_hp = self.get_max_hp()
 
     def heal(self):
         heal = random.randrange(25, 50)
@@ -133,14 +134,8 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     # @abstractmethod
     # def __str__():
     #     pass
->>>>>>> Stashed changes
 
-    @staticmethod
-    @abstractmethod
     def get_name(self):
-<<<<<<< Updated upstream
-        pass
-=======
         """
         Getter for name property.
         """
@@ -153,27 +148,46 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
-        return (self.__current_hp <= 0),  # sys.exit()  should we do something before exit?
->>>>>>> Stashed changes
+        return (self.__current_hp <= 0), sys.exit()  # display Game Over message, sys.exit() in main code
 
-    @staticmethod
-    @abstractmethod
-    def damage_range(self):
-        pass
-
-    @staticmethod
-    @abstractmethod
-    def attack_speed(self):
-        pass
-
-    @staticmethod
-    @abstractmethod
-    def hit_chance(self):
-        pass
-
-    @staticmethod
-    @abstractmethod
-    def is_dead(self):
-        pass
+    # determines whether an attack is a hit or a miss. Returns true if attack is successful.
+    # Generates random number. Compares random number to attack chance.
+    def attack(self):
+        self.set_attack()
+        curr_attack = self.get_attack()
+        random_number = random.randrange(0, 100)
+        return curr_attack >= random_number
 
 
+    def take_damage(self, damage, source):
+        """
+        Reduces HP by the indicated amount and makes an announcement.
+        """
+        self.__current_hp -= damage
+        print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
+
+        # self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
+
+    # @abstractmethod
+    def __str__(self):
+        """
+        Returns a string representation of the Dungeon Character.
+        """
+
+        # produce a content line for each status item
+        name_str = f"Name: {self.__name}"
+        hp_str = f"HP: {self.__current_hp} / {self.__generated_hp}"
+        attack_str = f"Attack Range: {self.__attack_min} to {self.__attack_max}"
+        speed_str = f"Speed: {self.__attack_speed}"
+        dodge_str = f"Dodge Chance: {round(self.__chance_to_dodge_min * 100)}% to {round(self.__chance_to_dodge_max * 100)}% "
+        accuracy_str = f"Hit Chance: {round(self.__chance_to_hit_min * 100)}% to {round(self.__chance_to_hit_max * 100)}%"
+
+        return name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str
+
+        # return status_items
+
+
+# a = DungeonCharacter("Kevin", 100, 200, range(100, 200), range(100, 200), 30, 80, range(30, 80), 4, .60, .75,
+#                      random.uniform(.60, .75), .20, .30, random.uniform(.20, .30))
+#
+# print(a)
