@@ -152,11 +152,49 @@ class DungeonCharacter(object, metaclass=ABCMeta):
 
     # determines whether an attack is a hit or a miss. Returns true if attack is successful.
     # Generates random number. Compares random number to attack chance.
-    def attack(self):
-        self.set_attack()
-        curr_attack = self.get_attack()
-        random_number = random.randrange(0, 100)
-        return curr_attack >= random_number
+   
+    def attack(self, attacker, defender):
+
+        while defender.get_current_hp() > 0 and attacker.get_current_hp() > 0:
+
+            dodge_chance = random.uniform(.1, 1)
+
+            # character will attack another character
+            hit_chance = random.uniform(.1, 1)  # generates a random % chance of a successful attack by this character
+            if attacker.get_attack_speed >= defender.get_attack_speed:
+
+                if attacker.get_chance_to_hit >= hit_chance:
+                    if defender.get_chance_to_dodge < dodge_chance:
+                        attacker.get_attack_damage_range() - defender.get_current_hp()
+                        print(f"The {attacker} has dealt the {defender} {attacker.get_damage_range()} damage to their hp."
+                              f"The {defender} has {defender.get_current_hp()} hp.")
+                    else:
+                        print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                              f"The {defender} has {defender.get_current_hp()} hp.")
+                else:
+                    print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                          f"The {defender} has {defender.get_current_hp()} hp.")
+
+            elif attacker.get_attack_speed < defender.get_attack_speed:
+                if defender.get_chance_to_hit >= hit_chance:
+                    if attacker.get_chance_to_dodge < dodge_chance:
+                        defender.get_attack_damage_range() - attacker.get_current_hp()
+                        print(f"The {defender} has dealt the {attacker} {defender.get_damage_range()} damage to"
+                              f" their hp. The {attacker} has {attacker.get_current_hp()} hp.")
+                    else:
+                        print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                              f"The {attacker} has {attacker.get_current_hp()} hp.")
+                else:
+                    print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                          f"The {attacker} has {attacker.get_current_hp()} hp.")
+
+            if attacker.get_current_hp() <= 0:
+                print(f"The {attacker} hp is {attacker.get_current_hp()}/{attacker.get_generated_hp}. You have died.")
+                attacker.is_dead()
+            elif defender.get_current_hp() <= 0:
+                print(f"The {defender} hp is {defender.get_current_hp()}/{defender.get_generated_hp}. The {defender}"
+                      f" has died.")
+
 
 
     def take_damage(self, damage, source):
