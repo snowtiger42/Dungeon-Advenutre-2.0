@@ -6,18 +6,17 @@ import random
 
 
 class Hero(DungeonCharacter):
-    def __init__(self, name, min_hp, max_hp, attack_min, attack_max,
-                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
-                 chance_to_dodge_max, chance_to_dodge, chance_to_block_min, chance_to_block_max, chance_to_block):
+    def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
+                 chance_to_dodge_min, chance_to_dodge_max, chance_to_block_min, chance_to_block_max):
         # if self.__class__ == Hero:
         #     raise Exception('I am abstract!')
         super().__init__(name, min_hp, max_hp, attack_min, attack_max,
-                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
-                 chance_to_dodge_max, chance_to_dodge)
+                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_dodge_min,
+                 chance_to_dodge_max)
 
         self.__chance_to_block_min = chance_to_block_min
         self.__chance_to_block_max = chance_to_block_max
-        self.__chance_to_block = chance_to_block
+        self.__chance_to_block = random.uniform(self.__chance_to_block_min, self.__chance_to_block_max)
         self.__pillars = []
         self.__vision_p = 0
         self.__health_p = 0
@@ -26,20 +25,20 @@ class Hero(DungeonCharacter):
     def get_chance_to_block_min(self):
         return self.__chance_to_block_min
 
-    def set_chance_to_block_min(self):
-        self.__chance_to_block_min = .30
+    def set_chance_to_block_min(self, block_min):
+        self.__chance_to_block_min = block_min
 
     def get_chance_to_block_max(self):
         return self.__chance_to_block_max
 
-    def set_chance_to_block_max(self):
-        self.__chance_to_block_max = .50
+    def set_chance_to_block_max(self, block_max):
+        self.__chance_to_block_max = block_max
 
     def get_chance_to_block(self):
         return self.__chance_to_block
 
-    def set_chance_to_block(self):
-        self.__chance_to_block = random.uniform(self.__chance_to_block_min, self.__chance_to_block_max)
+    def set_chance_to_block(self, block_chance):
+        self.__chance_to_block = block_chance
 
     @abstractmethod
     def special_move(self):
