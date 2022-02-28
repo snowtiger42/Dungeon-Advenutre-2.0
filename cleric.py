@@ -9,23 +9,27 @@ class Cleric(Hero):
     """
 
     def __init__(self, name):
-        super().__init__(name, 100, 150, 30, 60, 5, .60,
-                         .75, random.uniform(.70, .80), .4, .5, random.uniform(.4, .5), .30, .4,
-                         random.uniform(.3, .4))
+        super().__init__(name, 100, 180, 30, 60, 5, .75, .80, .4, .5, .30, .4)
         self.__name = name
 
     def special_move(self):
+        reduced_chance_to_hit = (self.get_chance_to_hit()) / 2
+        hitChance = random.uniform(.1, 1)
         heal = 66
         new_hp = self.get_current_hp() + heal
 
-        if new_hp >= self.get_generated_hp():
-            self.set_current_hp(self.get_generated_hp())
+        if reduced_chance_to_hit >= hitChance:
+            if new_hp >= self.get_generated_hp():
+                self.set_current_hp(self.get_generated_hp())
+            else:
+                self.set_current_hp(new_hp)
+            print(f"You used the Heal ability! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+            return True
         else:
-            self.set_current_hp(new_hp)
-        print(f"You used the Heal ability! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
-        # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
-        return True
-
+            print(f"You tried to used the Heal ability, but it failed to work! It heals {0} HP, bringing you to "
+                  f"{self.get_current_hp()}.")
+            return False
 
 
 adventurer = Cleric("Talia")
@@ -36,7 +40,7 @@ print("\n------------------------print adventurer status ('empty', try using eit
 adventurer.use_health_potion()
 adventurer.use_vision_potion()
 
-adventurer.take_damage(99, "Monster")
+adventurer.take_damage(99, "Phoenix")
 
 print(adventurer)
 
