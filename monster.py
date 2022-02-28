@@ -6,12 +6,12 @@ import random
 
 class Monster(DungeonCharacter):
     def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
-                 chance_to_hit, chance_to_dodge_min, chance_to_dodge_max, chance_to_dodge, chance_to_regenerate_min,
+                 chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
                  chance_to_regenerate_max, regenerate_amount):
         # if self.__class__ == Monster:
         #     raise Exception('I am abstract!')
         super().__init__(name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
-                         chance_to_hit_max, chance_to_hit, chance_to_dodge_min, chance_to_dodge_max, chance_to_dodge)
+                         chance_to_hit_max, chance_to_hit, chance_to_dodge_min)
 
         self.__chance_to_regenerate_min = chance_to_regenerate_min
         self.__chance_to_regenerate_max = chance_to_regenerate_max
@@ -46,6 +46,9 @@ class Monster(DungeonCharacter):
         # heal = HealAble().heal()
         current_hp = self.get_current_hp()
         new_hp = current_hp + heal
+
+        if self.get_current_hp() <= 0:
+            self.is_dead()
 
         if self.__chance_to_regenerate >= self.regen_chance_compare():
             self.set_current_hp(new_hp)
