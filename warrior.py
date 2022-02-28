@@ -11,12 +11,13 @@ class Warrior(Hero):
     """
 
     def __init__(self, name):
-        super().__init__(name, 100, 200, 30, 80, 4, .70, .75, random.uniform(.70, .75), .3, .5, random.uniform(.3, .4),
-                         .30, .5, random.uniform(.4, .5))
+        super().__init__(name, 150, 200, 30, 80, 4, .60, .75, .3, .5, .30, .5)
         self.__name = name
 
     def special_move(self):
-        reduced_chance_to_hit = (self.get_chance_to_hit())
+        if self.get_current_hp() <= 0:
+            self.is_dead()
+        reduced_chance_to_hit = (self.get_chance_to_hit()) / 2
         hitChance = random.uniform(.1, 1)
         damage = (self.get_attack_damage_range()) * 3
 
@@ -24,7 +25,7 @@ class Warrior(Hero):
             new_hp = self.get_current_hp()
             result = new_hp - damage
 
-            if result >= self.get_generated_hp():
+            if result <= self.get_generated_hp():
                 self.set_current_hp(0)
             else:
                 self.set_current_hp(result)
