@@ -9,7 +9,7 @@ import numpy as np
 class DungeonCharacter(object, metaclass=ABCMeta):
 
     def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
-                 chance_to_hit, chance_to_dodge_min, chance_to_dodge_max, chance_to_dodge):
+                 chance_to_dodge_min, chance_to_dodge_max):
         # if self.__class__ == DungeonCharacter:
         #     raise Exception('I am abstract!')
         self.__name = name
@@ -19,20 +19,18 @@ class DungeonCharacter(object, metaclass=ABCMeta):
 
         self.__generated_hp = random.randrange(self.__min_hp, self.__max_hp)
         self.__current_hp = self.__generated_hp
-        # self.__generated_hp = generated_hp
-        # self.__current_hp = current_hp
         self.__attack_min = attack_min
         self.__attack_max = attack_max
 
         self.__attack_damage_range = random.randrange(self.__attack_min, self.__attack_max)
-        # self.__attack_damage_range = attack_damage_range
         self.__attack_speed = attack_speed
         self.__chance_to_dodge_min = chance_to_dodge_min
         self.__chance_to_dodge_max = chance_to_dodge_max
-        self.__chance_to_dodge = chance_to_dodge
+        self.__chance_to_dodge = random.uniform(self.__chance_to_dodge_min, self.__chance_to_dodge_max)
         self.__chance_to_hit_min = chance_to_hit_min
         self.__chance_to_hit_max = chance_to_hit_max
-        self.__chance_to_hit = chance_to_hit
+        # self.__chance_to_hit = chance_to_hit
+        self.__chance_to_hit = random.uniform(self.__chance_to_hit_min, self.__chance_to_hit_max)
 
     def get_min_hp(self):
         return self.__min_hp
@@ -115,8 +113,8 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def get_chance_to_dodge(self):
         return self.__chance_to_dodge
 
-    def set_chance_to_dodge(self):
-        self.__chance_to_dodge = random.uniform(self.__chance_to_dodge_min, self.__chance_to_dodge_max)
+    def set_chance_to_dodge(self, chance_to_dodge):
+        self.__chance_to_dodge = chance_to_dodge
 
     def get_name(self):
         """
@@ -131,8 +129,8 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
+        print("\nOh NO!!! You Died")
         print(self.__str__())
-        print("Oh NO!!! You Died")
         return self.get_current_hp(), sys.exit()
         # return (self.set_current_hp(self.get_current_hp())), sys.exit()
 
