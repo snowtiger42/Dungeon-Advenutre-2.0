@@ -3,7 +3,6 @@ from abc import abstractmethod
 from mock_game import MockGame as Game
 import sys
 import random
-# from combatMode import CombatMode
 import numpy as np
 
 
@@ -222,39 +221,11 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         dodge_str = f"Dodge Chance: {round(self.__chance_to_dodge_min * 100)}% to {round(self.__chance_to_dodge_max * 100)}% "
         accuracy_str = f"Hit Chance: {round(self.__chance_to_hit_min * 100)}% to {round(self.__chance_to_hit_max * 100)}%"
 
-        # return name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str
+        return name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str
+
         # return status_items
 
-        status_items = [name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str]
-
-        line_size = 0
-        for line in status_items:
-            if len(line) > line_size:
-                line_size = len(line)
-
-        # create borders
-        border = "+" + "-" * (line_size + 2) + "+"
-
-        # add spacers to all status items based on max length
-        # so that right border is even
-        output_str = "\n" + border
-        for line in status_items:
-            output_str += f"\n| {line}"
-            white_space = line_size - len(line)
-            if white_space > 0:
-                output_str += " " * white_space
-            output_str += " |"
-
-        output_str += f"\n{border}\n"
-        return output_str
-
-
-kevin = DungeonCharacter("Kevin", 200, 300, 40, 80, 4, .70, .85, .30, .40)
-talia = DungeonCharacter("Talia", 100, 200, 30, 80, 3, .60, .75, .20, .30)
-
-
-print(kevin)
-print(talia)
-DungeonCharacter.combat(kevin, talia)
-
-# CombatMode()
+# a = DungeonCharacter("Kevin", 100, 200, 30, 80, 4, .60, .75, random.uniform(.60, .75), .20, .30,
+# random.uniform(.20, .30))
+#
+# print(a)

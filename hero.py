@@ -6,82 +6,43 @@ import random
 
 
 class Hero(DungeonCharacter):
-    def __init__(self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, attack_damage_range,
-                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
-                 chance_to_dodge_max, chance_to_dodge, chance_to_block_min, chance_to_block_max, chance_to_block,
-                 health_p, vision_p):
+    def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
+                 chance_to_dodge_min, chance_to_dodge_max, chance_to_block_min, chance_to_block_max):
         # if self.__class__ == Hero:
         #     raise Exception('I am abstract!')
-        super().__init__(name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, attack_damage_range,
-                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_hit, chance_to_dodge_min,
-                 chance_to_dodge_max, chance_to_dodge)
+        super().__init__(name, min_hp, max_hp, attack_min, attack_max,
+                 attack_speed, chance_to_hit_min, chance_to_hit_max, chance_to_dodge_min,
+                 chance_to_dodge_max)
 
         self.__chance_to_block_min = chance_to_block_min
         self.__chance_to_block_max = chance_to_block_max
-        self.__chance_to_block = chance_to_block
+        self.__chance_to_block = random.uniform(self.__chance_to_block_min, self.__chance_to_block_max)
         self.__pillars = []
-        self.__vision_p = vision_p
-        self.__health_p = health_p
-        self.__vision = 0
-
-        # self.__vision_p = 0
-        # self.__health_p = 0
-        # self.__vision = 0
-
-    def get_health_p(self):
-        return self.__health_p
-
-    def set_health_p(self):
-        self.__health_p = 0
-
-    def get_vision_p(self):
-        return self.__vision_p
-
-    def set_vision_p(self):
         self.__vision_p = 0
-
+        self.__health_p = 0
+        self.__vision = 0
 
     def get_chance_to_block_min(self):
         return self.__chance_to_block_min
 
-    def set_chance_to_block_min(self):
-        self.__chance_to_block_min = .30
+    def set_chance_to_block_min(self, block_min):
+        self.__chance_to_block_min = block_min
 
     def get_chance_to_block_max(self):
         return self.__chance_to_block_max
 
-    def set_chance_to_block_max(self):
-        self.__chance_to_block_max = .50
+    def set_chance_to_block_max(self, block_max):
+        self.__chance_to_block_max = block_max
 
     def get_chance_to_block(self):
         return self.__chance_to_block
 
-    def set_chance_to_block(self):
-        self.__chance_to_block = random.uniform(self.__chance_to_block_min, self.__chance_to_block_max)
+    def set_chance_to_block(self, block_chance):
+        self.__chance_to_block = block_chance
 
     @abstractmethod
     def special_move(self):
         pass
-
-    # @abstractmethod
-    # def pit_damage(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def add_health_potion(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def use_health_potion(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def add_vision_potion(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def use_vision_potion(self):
-    #     pass
 
     def earn_pillar(self, pillar):
         """
@@ -113,16 +74,18 @@ class Hero(DungeonCharacter):
         Adventurer's health by a random number.
         :returns: True if potion was used, False otherwise
         """
-        heal = DungeonCharacter.heal(self)
+        heal = 50
 
         if self.__health_p > 0:
             self.__health_p -= 1
-            self.__current_hp += heal
+            new_hp = self.get_current_hp() + heal
 
-            if self.__current_hp >= self.__max_hp:
-                self.__current_hp = self.__max_hp
+            if new_hp >= self.get_generated_hp():
+                self.set_current_hp(self.get_generated_hp())
+            else:
+                self.set_current_hp(new_hp)
 
-            print(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+            print(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
             # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
             return True
 
@@ -175,20 +138,13 @@ class Hero(DungeonCharacter):
 
             # self.__game.announce("The effects of your vision potion fade a little.")
 
-    # def take_damage(self, damage, source):
-    #     """
-    #     Reduces HP by the indicated amount and makes an announcement.
-    #     """
-    #     self.__current_hp -= damage
-    #     print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
-    #
-    #     # self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
-
     def exit(self):
         """
         Ends the game if the adventurer has all four pillars.  Makes an announcement either way.
         """
         if len(self.__pillars) >= 4:
+            print(
+                "You have acquired the knowledge of all four pillars of OO! You leave the dungeon a better programmer!")
             sys.exit()
             # self.__game.end_game()
             # return
@@ -210,20 +166,20 @@ class Hero(DungeonCharacter):
         # p = format(prefix).replace("['", '').replace(',', "\n").replace("]", " " * 27).replace("'", " |", 10)
         p = format(prefix).replace(',', "" +"\n").replace("('", "").replace("'", " ").replace(")", "     ")
 
+        block_str = f"Block Chance: {round(self.__chance_to_block_min * 100)}% to {round(self.__chance_to_block_max * 100)}% "
         healthp_str = f"Health potions: {self.__health_p}"
         visionp_str = f"Vision potions: {self.__vision_p}"
         pillar_string = f"Pillars found: {self.__pillars}"
-        # super().__str__()
 
-        status_items = [p, healthp_str, visionp_str, pillar_string]
+        status_items = [p, block_str, healthp_str, visionp_str, pillar_string]
+
         line_size = 0
-
         for line in status_items:
             if len(line) > line_size:
                 line_size = len(line)
 
         # create borders
-        border = "+" + "-" * (line_size // 5 + 5) + "+"
+        border = "+" + "-" * (line_size + 2) + "+"
 
         # add spacers to all status items based on max length
         # so that right border is even
@@ -232,7 +188,7 @@ class Hero(DungeonCharacter):
             output_str += f"\n| {line}"
             white_space = line_size - len(line)
             if white_space > 0:
-                output_str += " " * (white_space // 11 + 1)
+                output_str += " " * white_space
             output_str += " |"
 
         output_str += f"\n{border}\n"
@@ -244,7 +200,8 @@ class Hero(DungeonCharacter):
         return pillar in self.__pillars
 
 
-# b = Hero(.30, .50, random.uniform(.30, .50))
+# b = Hero("Kevin", 100, 200, 30, 80, 4, .60, .75, random.uniform(.60, .75), .20, .30, random.uniform(.20, .30), .30, .50,
+#          random.uniform(.30, .50))
 #
 # print(b)
 #
