@@ -3,6 +3,7 @@ from abc import abstractmethod
 from mock_game import MockGame as Game
 import sys
 import random
+# from combatMode import CombatMode
 import numpy as np
 
 
@@ -149,8 +150,89 @@ class DungeonCharacter(object, metaclass=ABCMeta):
             self.is_dead()
 
         print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
-
         # self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
+
+
+        # determines whether an attack is a hit or a miss. Returns true if attack is successful.
+        # Generates random number. Compares random number to attack chance.
+    def combat(self, attacker, defender):
+
+        while defender.get_current_hp() > 0 and attacker.get_current_hp() > 0:
+            # attacker_damage = attacker.get_attack_damage_range()
+            attacker_damage = random.randint(attacker.get_attack_min(), attacker.get_attack_max())
+
+            defender_new_hp = defender.get_current_hp()
+
+            defender_damage = random.randint(defender.get_attack_min(), defender.get_attack_max())
+            attacker_new_hp = attacker.get_current_hp()
+
+            attcker_result = defender_new_hp - attacker_damage
+            defender_result = attacker_new_hp - defender_damage
+
+            dodge_chance = random.uniform(.1, 1)
+            # character will attack another character
+            hit_chance = random.uniform(.1, 1)  # generates a random % chance of a successful attack by this character
+            if attacker.get_attack_speed() >= defender.get_attack_speed():
+
+                if attacker.get_chance_to_hit() >= hit_chance:
+                    if defender.get_chance_to_dodge() < dodge_chance:
+                        defender.set_current_hp(defender.get_current_hp() - attacker_damage)
+                        print(f"The {attacker} has dealt the {defender} {attacker_damage} damage to "
+                            f"their hp. The {defender} has {defender.get_current_hp()} hp.")
+                    else:
+                        print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                              f"The {defender} has {defender.get_current_hp()} hp.")
+                else:
+                    print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                          f"The {defender} has {defender.get_current_hp()} hp.")
+
+                if defender.get_current_hp() > 0:
+                    if defender.get_chance_to_hit() >= hit_chance:
+                        if attacker.get_chance_to_dodge() < dodge_chance:
+                            attacker.set_current_hp(attacker.get_current_hp() - defender_damage)
+                            print(f"The {defender} has dealt the {attacker} {defender_damage} damage to"
+                                  f" their hp. The {attacker} has {attacker.get_current_hp()} hp.")
+                        else:
+                            print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                  f"The {attacker} has {attacker.get_current_hp()} hp.")
+                    else:
+                        print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                              f"The {attacker} has {attacker.get_current_hp()} hp.")
+
+            elif attacker.get_attack_speed() < defender.get_attack_speed():
+                if defender.get_chance_to_hit() >= hit_chance:
+                    if attacker.get_chance_to_dodge() < dodge_chance:
+                        attacker.set_current_hp(attacker.get_current_hp() - defender_damage)
+                        print(f"The {defender} has dealt the {attacker} {defender_damage} damage to "
+                            f"their hp. The {attacker} has {attacker.get_current_hp()} hp.")
+                    else:
+                        print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                              f"The {attacker} has {attacker.get_current_hp()} hp.")
+                else:
+                    print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                          f"The {attacker} has {attacker.get_current_hp()} hp.")
+
+                if attacker.get_current_hp() > 0:
+                    if attacker.get_chance_to_hit() >= hit_chance:
+                        if defender.get_chance_to_dodge() < dodge_chance:
+                            defender.set_current_hp(defender.get_current_hp() - attacker_damage)
+                            print(f"The {attacker} has dealt the {defender} {attacker_damage} damage to"
+                                  f" their hp. The {defender} has {defender.get_current_hp()} hp.")
+                        else:
+                            print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                  f"The {defender} has {defender.get_current_hp()} hp.")
+                    else:
+                        print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                              f"The {defender} has {defender.get_current_hp()} hp.")
+
+        if attacker.get_current_hp() <= 0:
+            print(
+                f"The {attacker} hp is {attacker.get_current_hp()}/{attacker.get_generated_hp}. You have died.")
+            attacker.is_dead()
+        elif defender.get_current_hp() <= 0:
+            print(
+                f"The {defender} hp is {defender.get_current_hp()}/{defender.get_generated_hp}. The {defender}"
+                f" has died.")
 
     # @abstractmethod
     def __str__(self):
@@ -166,11 +248,41 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         dodge_str = f"Dodge Chance: {round(self.__chance_to_dodge_min * 100)}% to {round(self.__chance_to_dodge_max * 100)}% "
         accuracy_str = f"Hit Chance: {round(self.__chance_to_hit_min * 100)}% to {round(self.__chance_to_hit_max * 100)}%"
 
-        return name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str
-
+        # return name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str
         # return status_items
 
-# a = DungeonCharacter("Kevin", 100, 200, 30, 80, 4, .60, .75, random.uniform(.60, .75), .20, .30,
-# random.uniform(.20, .30))
-#
-# print(a)
+        status_items = [name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str]
+
+        line_size = 0
+        for line in status_items:
+            if len(line) > line_size:
+                line_size = len(line)
+
+        # create borders
+        border = "+" + "-" * (line_size + 2) + "+"
+
+        # add spacers to all status items based on max length
+        # so that right border is even
+        output_str = "\n" + border
+        for line in status_items:
+            output_str += f"\n| {line}"
+            white_space = line_size - len(line)
+            if white_space > 0:
+                output_str += " " * white_space
+            output_str += " |"
+
+        output_str += f"\n{border}\n"
+        return output_str
+
+
+kevin = DungeonCharacter("Kevin", 200, 300, 40, 80, 4, .70, .85, .30, .40)
+talia = DungeonCharacter("Talia", 100, 200, 30, 80, 3, .60, .75, .20, .30)
+
+
+print(kevin)
+print(talia)
+# DungeonCharacter.combat(kevin, talia)
+kevin.combat(kevin, talia)
+
+
+# CombatMode()
