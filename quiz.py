@@ -1,4 +1,3 @@
-import sqlite3
 import sqlite_creation
 import sqliteinsert
 import sqliteupdate
@@ -6,10 +5,12 @@ import sqliteselect
 
 
 class Quiz:
+    def __init__(self):
+        self.id_no = 0
 
     def create(self):
         database = r"dungeonquiz.db"
-        sql_create_questions_table = """ CREATE TABLE IF NOT EXISTS projects (
+        sql_create_questions_table = """ CREATE TABLE IF NOT EXISTS quiz (
                                         id integer PRIMARY KEY,
                                         category text NOT NULL,
                                         type text NOT NULL,
@@ -26,19 +27,40 @@ class Quiz:
     def insert(self):
         database = r"dungeonquiz.db"
 
+        self.id_no += 1
         conn = sqliteinsert.create_connection(database)
         with conn:
-            project = ('Test', 'Rhetorical', 'Welcome to Die?')
-            sqliteinsert.create_question(conn, project)
+            question_1 = ('Test', 'Rhetorical', 'Welcome to Die?')
+            question_2 = ('Test', 'Non-Rhetorical', 'Papa can you hear me?')
+            sqliteinsert.create_question(conn, question_1)
+            sqliteinsert.create_question(conn, question_2)
 
     def update(self):
-        pass
+        database = r"dungeonquiz.db"
+
+        conn = sqliteupdate.create_connection(database)
+        with conn:
+            sqliteupdate.update_task(conn, (self.id_no, 'Test', 'Rhetorical', 'Welcome to Die?'))
+
+        print('done')
 
     def select(self):
-        pass
+        database = r"dungeonquiz.db"
+
+        # create a database connection
+        conn = sqliteselect.create_connection(database)
+        with conn:
+            print("1. Query questions by priority:")
+            sqliteselect.select_quiz_by_priority(conn, 'Rhetorical')
+            sqliteselect.select_quiz_by_priority(conn, 'Non-Rhetorical')
+
+            print("2. Query all questions")
+            sqliteselect.select_all_quiz(conn)
 
 
 if __name__ == "__main__":
     q = Quiz()
     q.create()
     q.insert()
+    q.select()
+    q.update()

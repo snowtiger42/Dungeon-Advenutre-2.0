@@ -17,14 +17,14 @@ def create_connection(db_file):
     return conn
 
 
-def select_all_tasks(conn):
+def select_all_quiz(conn):
     """
     Query all rows in the tasks table
     :param conn: the Connection object
     :return:
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM tasks")
+    cur.execute("SELECT * FROM quiz")
 
     rows = cur.fetchall()
 
@@ -32,15 +32,15 @@ def select_all_tasks(conn):
         print(row)
 
 
-def select_task_by_priority(conn, priority):
+def select_quiz_by_priority(conn, category):
     """
     Query tasks by priority
     :param conn: the Connection object
-    :param priority:
+    :param category:
     :return:
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM tasks WHERE priority=?", (priority,))
+    cur.execute("SELECT * FROM quiz WHERE category=?", (category,))
 
     rows = cur.fetchall()
 
@@ -48,18 +48,3 @@ def select_task_by_priority(conn, priority):
         print(row)
 
 
-def main():
-    database = r"mysqlitedb.db"
-
-    # create a database connection
-    conn = create_connection(database)
-    with conn:
-        print("1. Query task by priority:")
-        select_task_by_priority(conn, 1)
-
-        print("2. Query all tasks")
-        select_all_tasks(conn)
-
-
-if __name__ == '__main__':
-    main()

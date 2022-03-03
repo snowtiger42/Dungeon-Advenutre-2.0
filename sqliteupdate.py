@@ -17,33 +17,19 @@ def create_connection(db_file):
     return conn
 
 
-def update_task(conn, task):
+def update_task(conn, question):
     """
-    update priority, begin_date, and end date of a task
+    update quiz questions selected
     :param conn:
-    :param task:
+    :param question:
     :return: project id
     """
-    sql = ''' UPDATE tasks
-              SET priority = ? ,
-                  begin_date = ? ,
-                  end_date = ?
+    sql = ''' UPDATE quiz
+              SET category = ? ,
+                  type = ? ,
+                  question = ?
               WHERE id = ?'''
     cur = conn.cursor()
-    cur.execute(sql, task)
+    cur.execute(sql, question)
     conn.commit()
 
-
-def main():
-    database = r"mysqlitedb.db"
-
-    # create a database connection
-    conn = create_connection(database)
-    with conn:
-        update_task(conn, (2, '2022-02-12', '2022-02-14', 2))
-
-    print('done')
-
-
-if __name__ == '__main__':
-    main()

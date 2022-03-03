@@ -24,7 +24,7 @@ def create_question(conn, question):
     :param question:
     :return: project id
     """
-    sql = ''' INSERT INTO projects(category, type, question)
+    sql = ''' INSERT INTO quiz(category, type, question)
               VALUES(?,?,?) '''
     cur = conn.cursor()
     cur.execute(sql, question)
@@ -32,16 +32,4 @@ def create_question(conn, question):
     return cur.lastrowid
 
 
-def main():
-    database = r"mysqlitedb.db"
 
-    # create a database connection
-    conn = create_connection(database)
-    with conn:
-        # create a new project
-        project = ('Cool App with SQLite & Python', '2015-01-01', '2015-01-30');
-        create_question(conn, project)
-
-
-if __name__ == '__main__':
-    main()

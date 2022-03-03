@@ -1,6 +1,6 @@
-from clear_screen import ClearScreen
 from sound_fx import SoundFx
 from sound_menu import SoundOption
+from dungeon_adventure import DungeonAdventure as DA
 
 
 class Instructions:
@@ -71,7 +71,6 @@ class Instructions:
         """
         This introduces how the game works
         """
-        ClearScreen()
         print("\n               Welcome to the Dungeon Crawler!\n\n"
               "  You are tasked with guiding the player character through a\n"
               "  dangerous maze. The player can move North, South, East or West\n"
@@ -97,7 +96,6 @@ class Instructions:
         spaces = "                   "
         choices = ["1", "2", "3", "0"]
         while selection not in choices:
-            ClearScreen()
             print("\n\n\n\n"
                   f"{spaces} DUNGEON CRAWLER\n\n\n"
                   f"{spaces} [1] Start New Game\n"

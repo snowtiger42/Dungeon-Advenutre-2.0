@@ -1,4 +1,3 @@
-from clear_screen import ClearScreen
 
 
 class SoundOption:
@@ -19,7 +18,6 @@ class SoundOption:
         choices = ['1', '2', '3', '4', '0']
         change_switch = 'off'
         while selection not in choices:
-            ClearScreen()
             if not sound.is_running:
                 change_switch = 'on'
             spaces = "                     "

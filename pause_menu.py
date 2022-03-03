@@ -1,5 +1,4 @@
 from main_menu import Instructions
-from clear_screen import ClearScreen
 from sound_menu import SoundOption
 
 
@@ -29,7 +28,6 @@ class PauseGame:
         spaces = "                   "
         options = ["1", "2", "3", "4", "5", "0"]
         while selection not in options:
-            ClearScreen()
             print("\n\n\n" 
                   f"{spaces} DUNGEON CRAWLER\n\n\n"
                   f"{spaces}  * GAME PAUSED *\n\n\n"
@@ -56,7 +54,6 @@ class PauseGame:
             elif selection == "4":
                 return True
             elif selection == "5":
-                ClearScreen()
                 print(f'\n\n                 You found the hidden map!\n\n{map_dungeon}')
                 input('\n       Press Enter to return to menu')
                 selection = None
