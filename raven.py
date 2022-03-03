@@ -13,8 +13,8 @@ self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, at
 
 
 class Raven(Monster):
-    def __init__(self, diff):
-        super().__init__("Raven", 250, 333, 40, 60, 0, 40, 60, 10, 10, 10, 10, 10, 10, 3, 60, 1, 5)
+    def __init__(self, x, y, diff):
+        super().__init__(x, y, "Raven", 250, 333, 40, 60, 0, 40, 60, 10, 10, 10, 10, 10, 10, 3, 60, 1, 5)
         self.__diff = diff
 
     def get_diff(self):

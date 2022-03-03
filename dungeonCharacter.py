@@ -9,10 +9,12 @@ import numpy as np
 
 class DungeonCharacter(object, metaclass=ABCMeta):
 
-    def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
+    def __init__(self, x, y, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
                  chance_to_dodge_min, chance_to_dodge_max):
         # if self.__class__ == DungeonCharacter:
         #     raise Exception('I am abstract!')
+        self.__x = x
+        self.__y = y
         self.__name = name
         # self.__game = game
         self.__min_hp = min_hp

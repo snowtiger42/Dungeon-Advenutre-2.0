@@ -3,10 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="20a9ddfe-063f-4406-b513-3419bf09c3a9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dungeon.py" beforeDir="false" afterPath="$PROJECT_DIR$/dungeon.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dungeonCharacter.py" beforeDir="false" afterPath="$PROJECT_DIR$/dungeonCharacter.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/emu.py" beforeDir="false" afterPath="$PROJECT_DIR$/emu.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/monster.py" beforeDir="false" afterPath="$PROJECT_DIR$/monster.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/phonenix.py" beforeDir="false" afterPath="$PROJECT_DIR$/phonenix.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/raven.py" beforeDir="false" afterPath="$PROJECT_DIR$/raven.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sphinx.py" beforeDir="false" afterPath="$PROJECT_DIR$/sphinx.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +30,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
   </component>
-  <component name="RunManager" selected="Python.dungeonCharacter">
+  <component name="RunManager" selected="Python.hero">
     <configuration name="dungeonCharacter" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -72,6 +75,28 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="hero" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="/Library/Frameworks/Python.framework/Versions/3.10/bin/python3" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/hero.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="monster" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -94,7 +119,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="phonenix" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+    <configuration name="warrior" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs>
@@ -107,7 +132,7 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/phonenix.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/warrior.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -118,10 +143,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.hero" />
+        <item itemvalue="Python.warrior" />
         <item itemvalue="Python.dungeonCharacter" />
         <item itemvalue="Python.monster" />
         <item itemvalue="Python.emu" />
-        <item itemvalue="Python.phonenix" />
       </list>
     </recent_temporary>
   </component>
@@ -135,6 +161,10 @@
       <updated>1645256018246</updated>
       <workItem from="1645256025718" duration="7000" />
       <workItem from="1645831287701" duration="3121000" />
+      <workItem from="1646167015254" duration="48000" />
+      <workItem from="1646175607442" duration="608000" />
+      <workItem from="1646276275762" duration="429000" />
+      <workItem from="1646277043086" duration="4873000" />
     </task>
     <servers />
   </component>
@@ -144,7 +174,9 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Dungeon_Advenutre_2_0$monster.coverage" NAME="monster Coverage Results" MODIFIED="1645841599818" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Dungeon_Advenutre_2_0$emu.coverage" NAME="emu Coverage Results" MODIFIED="1645840998320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Dungeon_Advenutre_2_0$hero.coverage" NAME="hero Coverage Results" MODIFIED="1646277382315" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Dungeon_Advenutre_2_0$phonenix.coverage" NAME="phonenix Coverage Results" MODIFIED="1645840910688" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Dungeon_Advenutre_2_0$warrior.coverage" NAME="warrior Coverage Results" MODIFIED="1646277355789" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Dungeon_Advenutre_2_0$dungeonCharacter.coverage" NAME="dungeonCharacter Coverage Results" MODIFIED="1645841607780" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

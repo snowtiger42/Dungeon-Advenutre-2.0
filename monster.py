@@ -5,12 +5,12 @@ import random
 
 
 class Monster(DungeonCharacter):
-    def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
+    def __init__(self, x, y, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
                  chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
                  chance_to_regenerate_max, regenerate_amount):
         # if self.__class__ == Monster:
         #     raise Exception('I am abstract!')
-        super().__init__(name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
+        super().__init__(x, y, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
                          chance_to_hit_max, chance_to_hit, chance_to_dodge_min)
 
         self.__chance_to_regenerate_min = chance_to_regenerate_min

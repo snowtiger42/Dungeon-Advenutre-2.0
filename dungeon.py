@@ -38,6 +38,23 @@ class Dungeon:
     #   Generate + helper functions  #
     ##################################
 
+    def generate_monsters(self, pillar_location_x, pillar_location_y,
+                          exit_location_x, exit_location_y):
+        monsters = []
+        for i in range(25):
+            monster_name = random.choice(["emu", "raven", "sphinx"])
+            x = random.randint(0, self.__size)
+            y = random.randint(0, self.__size)
+            if monster_name == "emu":
+                monster = Emu(x, y, 10)
+            elif monster_name == 'raven':
+                monster = Raven(x, y, 10)
+            elif monster_name == "sphinx":
+                monster = Sphinx(pillar_location_x, pillar_location_y, 4)
+            monsters.append(monster)
+        monsters.append(Phoenix(exit_location_x, exit_location_y, 1))
+        return monsters
+
     def generate(self) -> None:
         """
         Builds out the dungeon and places objects inside.
@@ -49,6 +66,10 @@ class Dungeon:
         pillars = ["E", "I", "A", "P"]
         exit_room = 30 + self.__diff * 10
 
+        exit_room_location = None
+
+        pillar_room_location = None
+
         # next, continue adding and linking rooms
         while rooms_to_build:
             new_room: Room = rooms_to_build.pop(0)
@@ -56,52 +77,59 @@ class Dungeon:
 
             # use id to place exit and pillars
             if new_room.get_id() == exit_room:
-                new_room.set_as_exit()
+                exit_room_location = (x, y)
+            new_room.set_as_exit()
             elif pillars and new_room.get_id() > (16 * self.__diff):
-                pillar_threshold = {
-                    1: 0.10,
-                    2: 0.5,
-                    3: 0.02
-                }
-                if random.random() < pillar_threshold[self.__diff]:
-                    new_room.clear_room()
-                    new_room.set_pillar(pillars.pop())
-
-            # populate the dungeon in each direction
-            target_location = {
-                "n": (x, y - 1),
-                "w": (x - 1, y),
-                "e": (x + 1, y),
-                "s": (x, y + 1)
+            pillar_threshold = {
+                1: 0.10,
+                2: 0.5,
+                3: 0.02
             }
+            if random.random() < pillar_threshold[self.__diff]:
+                pillar_room_location = (x, y)
+                new_room.clear_room()
+                new_room.set_pillar(pillars.pop())
 
-            for dir in ["n", "w", "e", "s"]:
-                try:
-                    # None means this dir isn't built yet
-                    if new_room.get_dir(dir) is None:
+        # populate the dungeon in each direction
+        target_location = {
+            "n": (x, y - 1),
+            "w": (x - 1, y),
+            "e": (x + 1, y),
+            "s": (x, y + 1)
+        }
 
-                        # random chance to make wall or corridor
-                        chance_to_wall = .525
-                        if random.random() < chance_to_wall:
-                            new_room.wall(dir)
-                        else:
-                            # get a reference to the room to corridor to
-                            target_room = self.__get_room_at(target_location[dir])
+        for dir in ["n", "w", "e", "s"]:
+            try:
+                # None means this dir isn't built yet
+                if new_room.get_dir(dir) is None:
 
-                            # make the room if it's not there
-                            if target_room is None:
-                                target_room = self.__make_new_room(target_location[dir])
-                                rooms_to_build.append(target_room)
+                    # random chance to make wall or corridor
+                    chance_to_wall = .525
+                    if random.random() < chance_to_wall:
+                        new_room.wall(dir)
+                    else:
+                        # get a reference to the room to corridor to
+                        target_room = self.__get_room_at(target_location[dir])
 
-                            # finally, link the rooms
-                            self.__double_link(new_room, target_room, dir)
+                        # make the room if it's not there
+                        if target_room is None:
+                            target_room = self.__make_new_room(target_location[dir])
+                            rooms_to_build.append(target_room)
 
-                except IndexError:  # if we exceed the array bounds, wall
-                    # Note that going to index [-1] causes wraparound
-                    # and will not trigger this exception.  We consider
-                    # this a feature, not a bug.
-                    new_room.wall(dir)
+                        # finally, link the rooms
+                        self.__double_link(new_room, target_room, dir)
 
+            except IndexError:  # if we exceed the array bounds, wall
+                # Note that going to index [-1] causes wraparound
+                # and will not trigger this exception.  We consider
+                # this a feature, not a bug.
+                new_room.wall(dir)
+
+
+        self.__monsters = self.generate_monsters(exit_room_location[0],
+                                                 exit_room_location[1],
+                                                 pillar_room_location[0],
+                                                 pillar_room_location[1])
         # check that sufficient rooms were generated
         room_cutoff = self.__size * self.__size * .85
         if self.__room_count < room_cutoff:
@@ -116,9 +144,7 @@ class Dungeon:
             self.__clear_dungeon()
             self.generate()
             return
-
-        # print(self.display(3))
-        # print(self)
+        
 
     def __validate_maze(self):
         """
