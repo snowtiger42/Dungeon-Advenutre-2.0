@@ -150,7 +150,7 @@ class DungeonAdventure:
             self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
             self.__start_canvas.pack(expand=True)
 
-            self.__title_image = tk.PhotoImage(file="title.png")
+            self.__title_image = tk.PhotoImage(file="title.png")  # new picture title.png
             self.__start_canvas.create_image(self.__window_size[0]//2, self.__window_size[1]//2, anchor=CENTER, image=self.__title_image)
         else:
             self.__reset_start_canvas("assets_title.png")

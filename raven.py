@@ -21,10 +21,10 @@ class Raven(Monster):
         self.__diff.get()
 
 
-if __name__ == "__main__":
-    test = Raven(10)
-    test.take_damage(500, test)
-    if test.is_dead():
-        print(test.get_current_hp())
+# if __name__ == "__main__":
+#     test = Raven(10)
+#     test.take_damage(500, test)
+#     if test.is_dead():
+#         print(test.get_current_hp())
 
 

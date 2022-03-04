@@ -1,6 +1,6 @@
 import random
 
-
+# add monster to room
 class Room:
     def __init__(self, room_id, location):
         self.__health_p = False

@@ -28,10 +28,10 @@ class Phoenix(Monster):
             self.rebirth()
 
 
-if __name__ == "__main__":
-    test = Phoenix(10)
-    test.take_damage(600, test)
-    print(test.get_current_hp())
-    if test.is_dead():
-        test.rebirth()
-        print(test.get_current_hp())
+# if __name__ == "__main__":
+#     test = Phoenix(10)
+#     test.take_damage(600, test)
+#     print(test.get_current_hp())
+#     if test.is_dead():
+#         test.rebirth()
+#         print(test.get_current_hp())
