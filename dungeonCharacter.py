@@ -126,23 +126,24 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def set_name(self, name):
         self.__name = name
 
-    def is_dead(self): #DEBUG
+    def is_dead(self): #DEBUG it gets triggered as soon as i move
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
-        print("\nOh NO!!! You Died")
+        # print("\nOh NO!!! You Died")
         # print(self.__str__())
-        return self.get_current_hp()
+
+        return self.get_current_hp() <= 0
 
         # return self.get_current_hp(), sys.exit()
         # return (self.set_current_hp(self.get_current_hp())), sys.exit()
 
-    def take_damage(self, damage, source):
+    def take_damage(self, damage, source): ###hit a pit, hp set to 0, also is dead not triggered
         """
         Reduces HP by the indicated amount and makes an announcement.
         """
         # damage = self.__attack_damage_range
-        self.__current_hp -= damage
+        self.__current_hp = self.get_current_hp() - damage
 
         if self.__current_hp <= 0:
             self.set_current_hp(0)
@@ -150,7 +151,8 @@ class DungeonCharacter(object, metaclass=ABCMeta):
 
         # print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
         self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at "
-                             f"{self.__current_hp} hp!")
+                             f"{self.get_current_hp()} hp!")
+
 
 
         # determines whether an attack is a hit or a miss. Returns true if attack is successful.
