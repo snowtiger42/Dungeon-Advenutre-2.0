@@ -9,12 +9,12 @@ import numpy as np
 
 class DungeonCharacter(object, metaclass=ABCMeta):
 
-    def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
+    def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
                  chance_to_dodge_min, chance_to_dodge_max):
         # if self.__class__ == DungeonCharacter:
         #     raise Exception('I am abstract!')
         self.__name = name
-        # self.__game = game
+        self.__game = game
         self.__min_hp = min_hp
         self.__max_hp = max_hp
 
@@ -126,17 +126,16 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def set_name(self, name):
         self.__name = name
 
-    def is_dead(self):
+    def is_dead(self): #DEBUG
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
         print("\nOh NO!!! You Died")
-        print(self.__str__())
-        return self.get_current_hp(), sys.exit()
-        # return (self.set_current_hp(self.get_current_hp())), sys.exit()
+        # print(self.__str__())
+        return self.get_current_hp()
 
-    def attack(self):
-        pass
+        # return self.get_current_hp(), sys.exit()
+        # return (self.set_current_hp(self.get_current_hp())), sys.exit()
 
     def take_damage(self, damage, source):
         """
@@ -149,14 +148,16 @@ class DungeonCharacter(object, metaclass=ABCMeta):
             self.set_current_hp(0)
             self.is_dead()
 
-        print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
-        # self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
+        # print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
+        self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at "
+                             f"{self.__current_hp} hp!")
 
 
         # determines whether an attack is a hit or a miss. Returns true if attack is successful.
         # Generates random number. Compares random number to attack chance.
-    def combat(self, attacker, defender):
 
+    def combat(self, attacker, defender):
+        "Note. Get rid of the while statement when making a GUI!!!"
         while defender.get_current_hp() > 0 and attacker.get_current_hp() > 0:
             # attacker_damage = attacker.get_attack_damage_range()
             attacker_damage = random.randint(attacker.get_attack_min(), attacker.get_attack_max())
@@ -248,41 +249,17 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         dodge_str = f"Dodge Chance: {round(self.__chance_to_dodge_min * 100)}% to {round(self.__chance_to_dodge_max * 100)}% "
         accuracy_str = f"Hit Chance: {round(self.__chance_to_hit_min * 100)}% to {round(self.__chance_to_hit_max * 100)}%"
 
-        # return name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str
-        # return status_items
-
-        status_items = [name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str]
-
-        line_size = 0
-        for line in status_items:
-            if len(line) > line_size:
-                line_size = len(line)
-
-        # create borders
-        border = "+" + "-" * (line_size + 2) + "+"
-
-        # add spacers to all status items based on max length
-        # so that right border is even
-        output_str = "\n" + border
-        for line in status_items:
-            output_str += f"\n| {line}"
-            white_space = line_size - len(line)
-            if white_space > 0:
-                output_str += " " * white_space
-            output_str += " |"
-
-        output_str += f"\n{border}\n"
-        return output_str
+        return [name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str]
 
 
-kevin = DungeonCharacter("Kevin", 200, 300, 40, 80, 4, .70, .85, .30, .40)
-talia = DungeonCharacter("Talia", 100, 200, 30, 80, 3, .60, .75, .20, .30)
-
-
-print(kevin)
-print(talia)
-# DungeonCharacter.combat(kevin, talia)
-kevin.combat(kevin, talia)
+# kevin = DungeonCharacter("Kevin", 200, 300, 40, 80, 4, .70, .85, .30, .40)
+# talia = DungeonCharacter("Talia", 100, 200, 30, 80, 3, .60, .75, .20, .30)
+#
+#
+# print(kevin)
+# print(talia)
+# # DungeonCharacter.combat(kevin, talia)
+# kevin.combat(kevin, talia)
 
 
 # CombatMode()
