@@ -1,6 +1,8 @@
 import tkinter as tk
 from adventurer import Adventurer
 from dungeon import Dungeon
+import base
+from sqlalchemy import create_engine
 # import PIL
 # from PIL import ImageTk, Image
 
@@ -98,6 +100,9 @@ class DungeonAdventure:
         Sets up the main game interface and binds the controls to enable play.
         """
         self.__reset_start_canvas(None)
+
+        engine = create_engine('sqlite:///:memory:', echo=True)
+        base.Base.metadata.create_all(engine)
 
         # Setup dungeon & get size
         self.__dungeon = Dungeon(self.__diff, self, self.__adventurer)

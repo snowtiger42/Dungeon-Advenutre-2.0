@@ -2,9 +2,15 @@ from abc import ABCMeta, abstractmethod
 from dungeonCharacter import DungeonCharacter
 from healAble import HealAble
 import random
+import base
 
 
-class Monster(DungeonCharacter):
+class Monster(DungeonCharacter, Base):
+    __tablename__ = 'monsters'
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+    room_id = Column(Integer, ForeignKey('rooms.id'))
+
     def __init__(self, x, y, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
                  chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
                  chance_to_regenerate_max, regenerate_amount):

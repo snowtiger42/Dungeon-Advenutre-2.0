@@ -1,7 +1,13 @@
 import random
+from base import Base
 
 # add monster to room
-class Room:
+class Room(): # Base
+    # __tablename__ = 'rooms'
+    # id = Column(Integer, primary_key=True)
+    # name = Column(String)
+    # monsters = relationship("Monster")
+
     def __init__(self, room_id, location):
         self.__health_p = False
         if random.random() < 0.1:

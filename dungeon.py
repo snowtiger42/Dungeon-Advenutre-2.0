@@ -40,16 +40,16 @@ class Dungeon:
 
     def generate_monsters(self, pillar_location_x, pillar_location_y,
                           exit_location_x, exit_location_y):
-        global monster
+        monster = None
         monsters = []
-        for i in range(25):
+        for i in range(15):
             monster_name = random.choice(["emu", "raven", "sphinx"])
             x = random.randint(0, self.__size)
             y = random.randint(0, self.__size)
             if monster_name == "emu":
-                monster = Emu(x, y, 10)  # The number lives outside this class
+                monster = Emu(x, y, 5)  # The number lives outside this class
             elif monster_name == 'raven':
-                monster = Raven(x, y, 10)  # when using random, you could have 2 monsters in same location
+                monster = Raven(x, y, 5)  # when using random, you could have 2 monsters in same location
             elif monster_name == "sphinx":
                 monster = Sphinx(pillar_location_x, pillar_location_y, 4)
             monsters.append(monster)
@@ -67,9 +67,11 @@ class Dungeon:
         pillars = ["E", "I", "A", "P"]
         exit_room = 30 + self.__diff * 10
 
-        exit_room_location = None
+        # exit_room_location = None
+        # pillar_room_location = None
 
-        pillar_room_location = None
+        exit_rooms = []
+        pillar_rooms = []
 
         # next, continue adding and linking rooms
         while rooms_to_build:
@@ -78,7 +80,8 @@ class Dungeon:
 
             # use id to place exit and pillars
             if new_room.get_id() == exit_room:
-                exit_room_location = (x, y)
+                # exit_room_location = (x, y)
+                exit_rooms.append((x, y))
                 new_room.set_as_exit()
             elif pillars and new_room.get_id() > (16 * self.__diff):
                 pillar_threshold = {
@@ -87,7 +90,8 @@ class Dungeon:
                     3: 0.02
                 }
                 if random.random() < pillar_threshold[self.__diff]:
-                    pillar_room_location = (x, y)
+                    # pillar_room_location = (x, y)
+                    pillar_rooms.append((x, y))
                     new_room.clear_room()
                     new_room.set_pillar(pillars.pop())
 
@@ -127,24 +131,26 @@ class Dungeon:
                     new_room.wall(dir)
 
 
-            self.__monsters = self.generate_monsters(exit_room_location[0],
-                                                     exit_room_location[1],
-                                                     pillar_room_location[0],
-                                                     pillar_room_location[1])
+
             # check that sufficient rooms were generated
             room_cutoff = self.__size * self.__size * .85
             if self.__room_count < room_cutoff:
                 # print("Maze too small!  Regenerating...")
                 self.__clear_dungeon()
                 self.generate()
-                return
+                break
 
             # check that all pillars and exit were placed
             if not self.__validate_maze():
                 # print("Objective placement failed!  Regenerating...")
                 self.__clear_dungeon()
                 self.generate()
-                return
+                break
+
+        self.__monsters = self.generate_monsters(exit_room_location[0],
+                                                 exit_room_location[1],
+                                                 pillar_room_location[0],
+                                                 pillar_room_location[1])
 
 
     def __validate_maze(self):
@@ -279,6 +285,7 @@ class Dungeon:
         return self.__room_array[location[1]][location[0]]
 
     def __clear_dungeon(self):
+        self.__monsters = []
         """
         Helper method to reset the dungeon.
         """
