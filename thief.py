@@ -9,9 +9,9 @@ class Thief(Hero):
     """
     A class the handles information for the Thief
     """
-    def __init__(self, name):
-        super().__init__(name, 100, 150, 30, 50, 7, .80, .90, .5, .6, .2, .25)
-        self.__name = name
+    def __init__(self, name, game):
+        super().__init__(name, game, 100, 150, 30, 50, 7, .80, .90, .5, .6, .2, .25)
+        # self.__name = name
 
     def special_move(self):
         if self.get_current_hp() <= 0:
@@ -27,11 +27,11 @@ class Thief(Hero):
 
             if result <= self.get_generated_hp():
                 self.set_current_hp(0)
-                print(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, bringing your "
+                self.__game.announce(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, bringing your "
                       f"opponent's HP to {self.get_current_hp()}.")
             else:
                 self.set_current_hp(result)
-                print(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, bringing your "
+                self.__game.announce(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, bringing your "
                       f"opponent's HP to {self.get_current_hp()}.")
             return True
 
@@ -43,31 +43,31 @@ class Thief(Hero):
                 self.set_current_hp(0)
             else:
                 self.set_current_hp(result)
-            print(f"You used the Sneak Attack ability, but you were spotted just in time! You strike only once and deal "
+            self.__game.announce(f"You used the Sneak Attack ability, but you were spotted just in time! You strike only once and deal "
                   f"{damage // 2} damage, bringing your "f"opponent's HP to {self.get_current_hp()}.")
         else:
-            print(f"You used the Sneak Attack ability and Missed! It deals {0} damage, bringing your opponent's HP to "
+            self.__game.announce(f"You used the Sneak Attack ability and Missed! It deals {0} damage, bringing your opponent's HP to "
                   f"{self.get_current_hp()}.")
             return False
 
 
-thief = Thief("Kevin")
-print(thief)
-
-thief.special_move()
-thief.special_move()
-thief.special_move()
-thief.special_move()
-thief.special_move()
-thief.special_move()
-thief.special_move()
-
-print(thief)
-
-thief.add_health_potion()
-thief.use_health_potion()
-
-print(thief)
+# thief = Thief("Kevin")
+# print(thief)
+#
+# thief.special_move()
+# thief.special_move()
+# thief.special_move()
+# thief.special_move()
+# thief.special_move()
+# thief.special_move()
+# thief.special_move()
+#
+# print(thief)
+#
+# thief.add_health_potion()
+# thief.use_health_potion()
+#
+# print(thief)
 
 
 
