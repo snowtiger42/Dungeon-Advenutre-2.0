@@ -1,16 +1,17 @@
 from abc import ABCMeta, abstractmethod
 from dungeonCharacter import DungeonCharacter
+from mock_game import MockGame as Game
 from healAble import HealAble
 import random
 
 
 class Monster(DungeonCharacter):
-    def __init__(self, name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
+    def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
                  chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
                  chance_to_regenerate_max, regenerate_amount):
         # if self.__class__ == Monster:
         #     raise Exception('I am abstract!')
-        super().__init__(name, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
+        super().__init__(name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
                          chance_to_hit_max, chance_to_hit, chance_to_dodge_min)
 
         self.__chance_to_regenerate_min = chance_to_regenerate_min
@@ -57,27 +58,35 @@ class Monster(DungeonCharacter):
                 self.set_current_hp(self.get_generated_hp())
             else:
                 self.set_current_hp(new_hp)
-            print(f"Managed to regenerate! It heals {heal} HP, bringing it to {self.get_current_hp()}.")
+            self.__game.announce(f"Managed to regenerate! It heals {heal} HP, bringing it to {self.get_current_hp()}.")
             # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
             return True
 
         else:
-            print(f"Failed to regenerate! It heals {0} HP, bringing it to {self.get_current_hp()}.")
+            self.__game.announce(f"Failed to regenerate! It heals {0} HP, bringing it to {self.get_current_hp()}.")
             # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
             return False
 
+    def combat(self, attacker, defender):
+        super().combat(attacker, defender)
+        if defender.get_current_hp > 0:
+            defender.regenerate()
+            # self.__game.announce(f"")
 
     def __str__(self):
         prefix = super().__str__()
-        p = format(prefix).replace(',', "" + "\n").replace("('", "").replace("'", " ").replace(")", "     ")
-        # p = format(prefix).replace(',', "" + "\n").repslace("('", "").replace("'", " ").replace(")", "     ")
+        line1 = str(prefix[0])
+        line2 = str(prefix[1])
+        line3 = str(prefix[2])
+        line4 = str(prefix[3])
+        line5 = str(prefix[4])
+        line6 = str(prefix[5])
 
         regen_range_str = f"Regen Chance: {round(self.__chance_to_regenerate_min * 100)}% to " \
                           f"{round(self.__chance_to_regenerate_max * 100)}% "
         regen_amount_str = f"Regen Amount: {self.__regenerate_amount} "
 
-        status_items = [p, regen_range_str, regen_amount_str]
-        line_size = 0
+        status_items = [line1, line2, line3, line4, line5, line6, regen_range_str, regen_amount_str]
 
         line_size = 0
         for line in status_items:
@@ -102,7 +111,7 @@ class Monster(DungeonCharacter):
         return output_str
 
 
-# c = Monster("Monster", 200, 300, 20, 40, 3, .50, .60, random.uniform(.50, .60), .10, .20, random.uniform(.10, .20),
+# c = Monster("Monster", Game(), 200, 300, 20, 40, 3, .50, .60, .10, .20,
 #             .1, .2, 20)
 # print(c)
 #
