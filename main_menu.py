@@ -1,9 +1,13 @@
 from sound_fx import SoundFx
 from sound_menu import SoundOption
-from dungeon_adventure import DungeonAdventure as DA
+import tkinter as tk
+from tkinter import *
+import re
+from dungeon_adventure import DungeonAdventure
+from load_game import LoadGame
 
 
-class Instructions:
+class MainMenu:
     """
     This runs the main menu, through which the user can access the game, read instructions for the game, adjust sound
     options or exit the game.
@@ -14,48 +18,16 @@ class Instructions:
         Create instance to pass to DungeonAdventure SoundFx instance, player name & difficulty.
         Start menu.
         """
+        self.__root = tk.Tk()
+        self.__window_size = (1150, 875)
+        self.__root.geometry(f"{self.__window_size[0]}x{self.__window_size[1]}+250+100")
+        self.__root.title("Dungeon Adventure")
+        self.__intro_slide = 0
+        self.__start_canvas = None
+        self.__dungeon_display = None
+        self.__message_log = None
         self.__sound = SoundFx()
-        self.__player_name = ""
-        self.__difficulty = 0
-        self.menu()
-
-    @property
-    def player_name(self):
-        """
-        Getter for player name
-        :return: player name
-        :rtype: str
-        """
-        return self.__player_name
-
-    @player_name.setter
-    def player_name(self, name):
-        """
-        Setter for player name
-        :raises: if param is not str type
-        """
-        if not isinstance(name, str):
-            raise TypeError('Only string accepted for name')
-        self.__player_name = name
-
-    @property
-    def difficulty(self):
-        """
-        Getter for difficulty level
-        :return: user's difficulty level choice
-        :rtype: int
-        """
-        return self.__difficulty
-
-    @difficulty.setter
-    def difficulty(self, num):
-        """
-        Setter for difficulty level, secondary check that user input is appropriate.
-        :raises: if int is not between 1 and 3
-        """
-        if 1 > num > 3:
-            raise ValueError('Secondary line of error caught, number is not between 1 and 3')
-        self.__difficulty = num
+        self.__initialize_intro()
 
     @property
     def sound(self):
@@ -66,78 +38,151 @@ class Instructions:
         """
         return self.__sound
 
-    @staticmethod
-    def instructions():
+    def __instructions(self):
         """
-        This introduces how the game works
+        Gives the player a briefing on how to play the game.
         """
-        print("\n               Welcome to the Dungeon Crawler!\n\n"
-              "  You are tasked with guiding the player character through a\n"
-              "  dangerous maze. The player can move North, South, East or West\n"
-              "  by using the keys 'n', 's', 'e', and 'w' respectively. Make it\n "
-              " through the maze alive while finding the four pillars of Object\n"
-              "  Oriented Programming: Encapsulation, Inheritance, Abstraction\n"
-              "  and Polymorphism. However, be careful of pits that will cause\n"
-              "  you to lose health. Losing all health will cause you to lose the\n"
-              "  game. There are other items that can be found, such as health\n"
-              "  potions and vision portions. Health potions restore lost HP and\n"
-              "  vision potions reveal 8 rounds around you. You only Win the game\n"
-              "  when you reach the end of the maze AFTER collecting all four\n"
-              "  pillars. Good Luck Explorer!")
-        input('\n               Press Enter to return to menu')
+        instructions = Toplevel(self.__root)
+        instructions.title("Instructions")
 
-    def menu(self):
-        """
-        This allows the user to navigate the main menu through the selection of specified options.
-        Credit https://www.youtube.com/watch?v=63nw00JqHo0
-        """
-        self.__sound.intro()
-        selection = None
-        spaces = "                   "
-        choices = ["1", "2", "3", "0"]
-        while selection not in choices:
-            print("\n\n\n\n"
-                  f"{spaces} DUNGEON CRAWLER\n\n\n"
-                  f"{spaces} [1] Start New Game\n"
-                  f"{spaces} [2] Game Instructions\n"
-                  f"{spaces} [3] Sound option\n"
-                  f"{spaces} [0] Exit Game\n\n")
-            if selection is not None and selection not in choices:
-                print(f"{spaces}Invalid selection! Please choose again.\n")
-            selection = input(f"{spaces}Enter your selection: ").strip()
-            if selection == "1":
-                self.make_player_name()
-                self.pick_difficulty()
-                return
-            elif selection == "2":
-                self.instructions()
-                selection = None
-            elif selection == "3":
-                SoundOption.change(self.__sound)
-                selection = None
-            elif selection == "0":
-                print(f"\n{spaces}Thank you for playing!\n\n")
-                exit()
+        button = Button(instructions, font="Verdana 19 bold", text="""Welcome!!! You are about to brave our maze 
+        inorder to find the four pillars of OO! Only by collecting these four pillars, will you be able to escape the 
+        maze and win the game. In this maze, you will use the 'w' letter to head up, the 'd' letter to go right, 
+        the 's' letter to go down and the 'a' letter to go left. Be careful though, for there are pits within the 
+        maze that can injure you and if you take to much damage, you will DIE!!! If that happens, the game ends and 
+        you'll start over with a new adventurer and a new maze. To help you survive, we have placed some potions 
+        within the maze to either restore your HP (health points) by pressing the 'h' button. Or, to help you see 
+        deeper within the maze, press the 'j' button. If You wish to check your adventurers stats, press the 'q' button.
+        Once you've found all four pillars of OO, find the room with the 0 mark in the maze and enter it to complete the
+        maze. Important to note, if the edges have holes, you can walk through them and it'll warp you to the other 
+        side of the maze!!!""")
+        button.pack()
 
-    def make_player_name(self):
+    def start_loop(self):
         """
-        User can only enter letter and space containing names
-        Credit https://stackoverflow.com/questions/29460405/checking-if-string-is-only-letters-and-spaces-python 
+        Begins the main loop
         """
-        while True:
-            name = input("\n  Enter your player name: ").capitalize().strip()
-            if all(x.isalpha() or x.isspace() for x in name):
-                break
-            else:
-                print("  Please enter an appropriate name.")
-        self.player_name = name
+        self.__root.mainloop()
 
-    def pick_difficulty(self):
+    def __initialize_intro(self):
         """
-        Allow user to pick difficulty level for dungeon. Ensures appropriate input before access
-        setter for difficulty
+        Sets up canvas for intro slides, then calls the intro method.
         """
-        difficulty = input("  Enter a game difficulty level between 1 and 3: ").strip()
-        while difficulty.isnumeric() is False or int(difficulty) < 1 or int(difficulty) > 3:
-            difficulty = input("  Please only enter a game difficulty level between 1 and 3: ")
-        self.difficulty = int(difficulty)
+
+        self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
+        self.__start_canvas.configure(bg="#FFBF90")
+
+        self.__start_canvas.pack(expand=True)
+
+        self.__root.bind("<Button-1>", self.__advance_intro)
+
+        self.__advance_intro(None)
+
+    def __advance_intro(self, keypress):
+        """
+            Each time the method is called, changes the image to create a pseudo-slideshow.
+            When the last slide is reached, calls the start menu.
+            """
+        if self.__intro_slide == 0:
+            self.__title_image = tk.PhotoImage(file="assets_intro_1.png")
+            self.__start_canvas.create_image(
+                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__intro_slide += 1
+        elif self.__intro_slide == 1:
+            self.__title_image = tk.PhotoImage(file="assets_intro_2.png")
+            self.__start_canvas.create_image(
+                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__intro_slide += 1
+        elif self.__intro_slide == 2:
+            self.__title_image = tk.PhotoImage(file="assets_intro_3.png")
+            self.__start_canvas.create_image(
+                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__intro_slide += 1
+        elif self.__intro_slide == 3:
+            self.__title_image = tk.PhotoImage(file="assets_controls.png")
+            self.__start_canvas.create_image(
+                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__intro_slide += 1
+        elif self.__intro_slide == 4:
+            self.__title_image = tk.PhotoImage(file="assets_objectives.png")
+            self.__start_canvas.create_image(
+                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__intro_slide += 1
+        elif self.__intro_slide == 5:
+            self.__start_canvas.destroy()
+            self.__root.unbind("<Button-1>")
+            self.__start_menu()
+
+    def __start_menu(self):
+        """
+        Creates and displays the start menu.
+        """
+        if not self.__start_canvas:
+            self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
+            self.__start_canvas.pack(expand=True)
+
+            self.__title_image = tk.PhotoImage(file="title.png")
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
+                                             image=self.__title_image)
+        else:
+            self.__reset_start_canvas("assets_title.png")
+
+        # --Buttons
+        button_y = self.__window_size[1] // 2 + 240
+        button_x = self.__window_size[0] // 2 - 40
+
+        st_menu_button1 = tk.Button(text='Start', font="Verdana 10 bold", width=5)
+        self.__start_canvas.create_window(button_x - 260, button_y, window=st_menu_button1)
+        st_menu_button1.config(command=self.__choose_class)
+
+        # st_menu_button1.config(command=self.__input_name)
+
+        st_menu_button2 = tk.Button(text='Instruction', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x, button_y, window=st_menu_button2)
+        st_menu_button2.config(command=self.__instructions())
+
+        st_menu_button3 = tk.Button(text='Quit', font="Verdana 10 bold", width=5)
+        self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+        st_menu_button3.config(command=quit)
+
+        # st_menu_button3 = tk.Button(text='Sound Menu', font="Verdana 10 bold", width=5)
+        # self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+        # st_menu_button4.config(command=SoundOption.change(self.__sound))
+        #
+        # st_menu_button3 = tk.Button(text='Load', font="Verdana 10 bold", width=5)
+        # self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+        # st_menu_button5.config(command=LoadGame())
+
+    def __reset_start_canvas(self, file_str):
+        """
+            Resets the canvas by deleting it and making a fresh one.
+            """
+        self.__start_canvas.destroy()
+        self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
+        self.__start_canvas.configure(bg="#FFBF90")
+        self.__start_canvas.pack(expand=True)
+
+        if file_str:
+            self.__title_image = tk.PhotoImage(file=file_str)
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
+                                             image=self.__title_image)
+
+    def __choose_class(self):
+        DA = DungeonAdventure()
+        # --Buttons
+        button_y = self.__window_size[1] // 2 + 240
+        button_x = self.__window_size[0] // 2 - 40
+
+        st_menu_button1 = tk.Button(text='Warrior', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x - 260, button_y, window=st_menu_button1)
+        st_menu_button1.config(command=lambda: DA.input_name("warrior"))
+
+        st_menu_button2 = tk.Button(text='Cleric', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x, button_y, window=st_menu_button2)
+        st_menu_button2.config(command=lambda: DA.input_name("cleric"))
+
+        st_menu_button3 = tk.Button(text='Thief', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+        st_menu_button3.config(command=lambda: DA.input_name("thief"))
+        choose_class = 3
+

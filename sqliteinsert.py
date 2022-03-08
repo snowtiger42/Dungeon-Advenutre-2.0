@@ -19,7 +19,7 @@ def create_connection(db_file):
 
 def create_question(conn, question):
     """
-    Create a new project into the projects table
+    Create a new question into the quiz table
     :param conn:
     :param question:
     :return: project id

@@ -2,6 +2,9 @@ import shelve
 
 
 class SaveGame:
+    def __init__(self):
+        pass
+
     def save_slot_1(self):
         save_slot_1 = shelve.open('save_slot_1')
         save_slot_1.close()

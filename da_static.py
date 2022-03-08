@@ -374,7 +374,7 @@ class DungeonAdventure:
 
     def display_instructions(self):
         instructions = Toplevel(self.__root)
-        instructions.title("Instructions")
+        instructions.title("MainMenu")
 
         button = Button(instructions, font="Verdana 19 bold", text="""Welcome!!! You are about to brave our maze 
         inorder to find the four pillars of OO! Only by collecting these four pillars, will you be able to escape the 

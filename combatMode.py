@@ -5,7 +5,6 @@ from thief import Thief
 from phonenix import Phoenix
 
 
-
 class CombatMode():
     def combat(self, attacker, defender):
         while defender.hp > 0 and attacker.hp > 0:
@@ -23,7 +22,8 @@ class CombatMode():
                 self.hero.hp -= attack
         if defender.hp <= 0:
             print(
-            "You killed the %s. How sad for the %s's family." % (defender.name.capitalize(), defender.name.capitalize()))
+                "You killed the %s. How sad for the %s's family." % (
+                defender.name.capitalize(), defender.name.capitalize()))
             del self.current_room.monster_list[defender.name]
         if self.hero.hp < 1:
             self.hero.death()

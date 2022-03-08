@@ -34,7 +34,7 @@ def select_all_quiz(conn):
 
 def select_quiz_by_priority(conn, category):
     """
-    Query tasks by priority
+    Query quiz questions by category
     :param conn: the Connection object
     :param category:
     :return:

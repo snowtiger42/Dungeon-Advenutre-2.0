@@ -5,9 +5,6 @@ import sqliteselect
 
 
 class Quiz:
-    def __init__(self):
-        self.id_no = 0
-
     def create(self):
         database = r"dungeonquiz.db"
         sql_create_questions_table = """ CREATE TABLE IF NOT EXISTS quiz (
@@ -27,7 +24,6 @@ class Quiz:
     def insert(self):
         database = r"dungeonquiz.db"
 
-        self.id_no += 1
         conn = sqliteinsert.create_connection(database)
         with conn:
             question_1 = ('Test', 'Rhetorical', 'Welcome to Die?')
@@ -40,7 +36,7 @@ class Quiz:
 
         conn = sqliteupdate.create_connection(database)
         with conn:
-            sqliteupdate.update_task(conn, (self.id_no, 'Test', 'Rhetorical', 'Welcome to Die?'))
+            sqliteupdate.update_task(conn, (1, 'Test', 'Rhetorical', 'Welcome to Die?'))
 
         print('done')
 
@@ -50,7 +46,7 @@ class Quiz:
         # create a database connection
         conn = sqliteselect.create_connection(database)
         with conn:
-            print("1. Query questions by priority:")
+            print("1. Query questions by category:")
             sqliteselect.select_quiz_by_priority(conn, 'Rhetorical')
             sqliteselect.select_quiz_by_priority(conn, 'Non-Rhetorical')
 

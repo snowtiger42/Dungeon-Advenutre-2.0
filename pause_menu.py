@@ -1,4 +1,4 @@
-from main_menu import Instructions
+from main_menu import MainMenu
 from sound_menu import SoundOption
 
 
@@ -32,7 +32,7 @@ class PauseGame:
                   f"{spaces} DUNGEON CRAWLER\n\n\n"
                   f"{spaces}  * GAME PAUSED *\n\n\n"
                   f"{spaces} [1] Resume Game\n"
-                  f"{spaces} [2] Game Instructions\n"
+                  f"{spaces} [2] Game MainMenu\n"
                   f"{spaces} [3] Sound options\n"   
                   f"{spaces} [4] Restart Game\n"    
                 # f"{spaces} [5] *Cheat* Reveals hidden room. This message is hidden in game\n"
@@ -45,7 +45,7 @@ class PauseGame:
                 sound.pause_menu(resume=True)
                 return False
             elif selection == "2":
-                Instructions.instructions()
+                MainMenu.instructions()
                 selection = None
             elif selection == "3":
                 sound.pause_menu(resume=True)

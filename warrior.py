@@ -1,6 +1,6 @@
 import random
 import self as self
-from dungeonCharacter import DungeonCharacter
+# from dungeonCharacter import DungeonCharacter
 from mock_game import MockGame as Game
 from hero import Hero
 
@@ -10,40 +10,46 @@ class Warrior(Hero):
     A class the handles information for the Warrior
     """
 
-    def __init__(self, name):
-        super().__init__(name, 100, 200, range(100, 200), range(100, 200), 30, 80, range(30, 80), 4, .60,
-                         .75, random.uniform(.60, .75), .3, .5, random.uniform(.3, .5), .30, .5,
-                         random.uniform(.3, .5), 0, 0)
-        self.__name = name
-
-    def get_name(self):
-        return self.__name
-
-    def set_name(self, name):
-        self.__name = name
-
-    def use_health_potion(self):
-        super().use_health_potion()
-
-    # def use_health_potion(self):
-    #     Hero.use_health_potion(self)
+    def __init__(self, name, game):
+        super().__init__(name, game, 150, 200, 30, 80, 4, .60, .75, .3, .4, .30, .5)
+        # self.__name = name
+        # self.__game = game
 
     def special_move(self):
-        hitChance = DungeonCharacter.get_chance_to_hit(self) // 2
-        damage = (DungeonCharacter.get_attack_damage_range(self)) * 3
+        if self.get_current_hp() <= 0:
+            self.is_dead()
+        reduced_chance_to_hit = (self.get_chance_to_hit()) / 2
+        hitChance = random.uniform(.1, 1)
+        damage = (self.get_attack_damage_range()) * 3
 
-        if hitChance >= 1:
-           hp = DungeonCharacter.get_current_hp(self)
-           hp -= damage
+        if reduced_chance_to_hit >= hitChance:
+            new_hp = self.get_current_hp()
+            result = new_hp - damage
 
+            if result <= self.get_generated_hp():
+                self.set_current_hp(0)
+            else:
+                self.set_current_hp(result)
+            self.__game.announce(f"You used the Crushing Blow ability! It deals {damage} damage, bringing your opponent's HP to "
+                  f"{self.get_current_hp()}.")
+            return True
+        else:
+            self.__game.announce(f"You used the Crushing Blow ability and Missed! It deals {0} damage, bringing your opponent's HP to "
+                  f"{self.get_current_hp()}.")
+            return False
 
-    # def __str__(self):
-    #     prefix = super().__str__()
-    #     p = format(prefix)
-    #     return print(p)
-
-adventurer = Warrior("Bill")
-print(adventurer)
+# adventurer = Warrior("Pranav", Game())
+# # me = Warrior("Kevin")
+# print(adventurer)
+# print("my name is ", adventurer.get_name())
+# print(me)
+#
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# print(me)
 
 
 # print("\n------------------------print adventurer status ('empty', try using either potion)-------------------------")
@@ -59,7 +65,7 @@ print(adventurer)
 # print("\n------------------------print adventurer status (take damage 1st)-------------------------")
 # adventurer.take_damage(1, "angry gnat")
 # print(adventurer)
-
+#
 # print("\n------------------------print adventurer status (take 1st health potion)-------------------------")
 # adventurer.use_health_potion()
 # print(adventurer)
@@ -96,11 +102,6 @@ print(adventurer)
 #
 # print("\n------------------------print adventurer status (TIME TO DIE!!!)-------------------------")
 # print(adventurer)
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
 # adventurer.take_damage(2000, "extra legendary pit")
 # print(adventurer)
 #
