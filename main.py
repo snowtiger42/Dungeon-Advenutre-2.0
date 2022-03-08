@@ -1,11 +1,5 @@
-from main_menu import MainMenu
+from main_menu import MainMenu as DA
 
 
-class Main:
-    def __init__(self):
-        mm = MainMenu()
-        mm.start_loop()
-
-
-if __name__ == '__main__':
-    Main()
+mm = DA()
+mm.start_loop()
