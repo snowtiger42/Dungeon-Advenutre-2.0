@@ -1,6 +1,6 @@
 import random
 import self as self
-from dungeonCharacter import DungeonCharacter
+# from dungeonCharacter import DungeonCharacter
 from mock_game import MockGame as Game
 from hero import Hero
 
@@ -10,9 +10,10 @@ class Warrior(Hero):
     A class the handles information for the Warrior
     """
 
-    def __init__(self, name):
-        super().__init__(name, 150, 200, 30, 80, 4, .60, .75, .3, .5, .30, .5)
-        self.__name = name
+    def __init__(self, name, game):
+        super().__init__(name, game, 150, 200, 30, 80, 4, .60, .75, .3, .4, .30, .5)
+        # self.__name = name
+        # self.__game = game
 
     def special_move(self):
         if self.get_current_hp() <= 0:
@@ -29,26 +30,26 @@ class Warrior(Hero):
                 self.set_current_hp(0)
             else:
                 self.set_current_hp(result)
-            print(f"You used the Crushing Blow ability! It deals {damage} damage, bringing your opponent's HP to "
+            self.__game.announce(f"You used the Crushing Blow ability! It deals {damage} damage, bringing your opponent's HP to "
                   f"{self.get_current_hp()}.")
             return True
         else:
-            print(f"You used the Crushing Blow ability and Missed! It deals {0} damage, bringing your opponent's HP to "
+            self.__game.announce(f"You used the Crushing Blow ability and Missed! It deals {0} damage, bringing your opponent's HP to "
                   f"{self.get_current_hp()}.")
             return False
 
-
-adventurer = Warrior("Pranav")
-me = Warrior("Kevin")
-print(adventurer)
-print(me)
-
-me.special_move()
-me.special_move()
-me.special_move()
-me.special_move()
-me.special_move()
-print(me)
+# adventurer = Warrior("Pranav", Game())
+# # me = Warrior("Kevin")
+# print(adventurer)
+# print("my name is ", adventurer.get_name())
+# print(me)
+#
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# print(me)
 
 
 # print("\n------------------------print adventurer status ('empty', try using either potion)-------------------------")
