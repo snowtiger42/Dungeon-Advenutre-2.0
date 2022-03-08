@@ -1,5 +1,5 @@
 import random
-import self as self
+# import self as self
 from dungeonCharacter import DungeonCharacter
 from mock_game import MockGame as Game
 from hero import Hero

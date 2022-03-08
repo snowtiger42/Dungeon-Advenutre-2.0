@@ -1,8 +1,9 @@
 import random
 from base import Base
 
+
 # add monster to room
-class Room(): # Base
+class Room():  # Base
     # __tablename__ = 'rooms'
     # id = Column(Integer, primary_key=True)
     # name = Column(String)
@@ -19,6 +20,9 @@ class Room(): # Base
         if random.random() < 0.1:
             self.__pit = random.randrange(1, 20)
         self.__exit = False
+        self.__monster = False
+        if random.random() < 0.1 and self.__pit == False:
+            self.__monster = True
         self.__doors = {
             "n": None,
             "w": None,
@@ -174,4 +178,3 @@ class Room(): # Base
             adv.take_damage(self.__pit, "a pit trap")
 
         self.__has_player = True
-

@@ -4,9 +4,15 @@ from mock_game import MockGame as Game
 # from healAble import HealAble
 import random
 from base import Base
+from noconflict import classmaker
+
+
+class MyMetaclass(type(DungeonCharacter), type(Base)):
+    pass
 
 
 class Monster(DungeonCharacter, Base):
+    __metaclass__ = MyMetaclass
     __tablename__ = 'monsters'
     id = Column(Integer, primary_key=True)
     name = Column(String)

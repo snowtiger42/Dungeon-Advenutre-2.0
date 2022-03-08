@@ -15,7 +15,6 @@ class Dungeon:
     An object that manages the Dungeon and the objects inside of it.
     """
 
-
     def __init__(self, diff, game: Game, war: Warrior) -> None:
         self.__diff = diff
         self.__game = game
@@ -46,19 +45,23 @@ class Dungeon:
     #   Generate + helper functions  #
     ##################################
 
-
     def generate_monsters(self, pillar_location_x, pillar_location_y,
                           exit_location_x, exit_location_y):
         monster = None
         monsters = []
+        locations = []
         for i in range(15):
             monster_name = random.choice(["emu", "raven", "sphinx"])
             x = random.randint(0, self.__size)
             y = random.randint(0, self.__size)
+            locations.append((x, y))
+            while (x, y) in locations:
+                x = random.randint(0, self.__size)
+                y = random.randint(0, self.__size)
             if monster_name == "emu":
-                monster = Emu(x, y, 5)  # The number lives outside this class
+                monster = Emu(x, y)  # The number lives outside this class
             elif monster_name == 'raven':
-                monster = Raven(x, y, 5)  # when using random, you could have 2 monsters in same location
+                monster = Raven(x, y)
             elif monster_name == "sphinx":
                 monster = Sphinx(pillar_location_x, pillar_location_y, 4)
             monsters.append(monster)

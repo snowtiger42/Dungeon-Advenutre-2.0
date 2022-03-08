@@ -1,6 +1,5 @@
 from abc import ABCMeta, abstractmethod
 import random
-
 from dungeonCharacter import DungeonCharacter
 from monster import Monster
 
