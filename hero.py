@@ -67,7 +67,7 @@ class Hero(DungeonCharacter):
         self.__game.announce(f"You pick up a health potion.\nYou now have {self.__health_p} of them.")
         return self.__health_p
 
-    def use_health_potion(self):
+    def use_health_potion(self): ####error not usable
         """
         If the Adventurer has any health potions, uses one and increases
         Adventurer's health by a random number.
@@ -85,7 +85,7 @@ class Hero(DungeonCharacter):
                 self.set_current_hp(new_hp)
 
             # print(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
-            self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+            self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
             return True
 
         elif self.__health_p <= 0:
