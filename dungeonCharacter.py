@@ -9,8 +9,8 @@ import numpy as np
 
 class DungeonCharacter(object, metaclass=ABCMeta):
 
-    def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
-                 chance_to_dodge_min, chance_to_dodge_max):
+    def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
+                 chance_to_hit_max, chance_to_dodge_min, chance_to_dodge_max):
         # if self.__class__ == DungeonCharacter:
         #     raise Exception('I am abstract!')
         self.__name = name
@@ -126,7 +126,7 @@ class DungeonCharacter(object, metaclass=ABCMeta):
     def set_name(self, name):
         self.__name = name
 
-    def is_dead(self): #DEBUG it gets triggered as soon as i move
+    def is_dead(self):  # DEBUG it gets triggered as soon as i move
         """
         Returns true if the adventurer's HP is above 0, and False otherwise.
         """
@@ -138,7 +138,7 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         # return self.get_current_hp(), sys.exit()
         # return (self.set_current_hp(self.get_current_hp())), sys.exit()
 
-    def take_damage(self, damage, source): ###hit a pit, hp set to 0, also is dead not triggered
+    def take_damage(self, damage, source):  ###hit a pit, hp set to 0, also is dead not triggered
         """
         Reduces HP by the indicated amount and makes an announcement.
         """
@@ -153,87 +153,129 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         self.__game.announce(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at "
                              f"{self.get_current_hp()} hp!")
 
-
-
         # determines whether an attack is a hit or a miss. Returns true if attack is successful.
         # Generates random number. Compares random number to attack chance.
 
-    def combat(self, attacker, defender):
-        "Note. Get rid of the while statement when making a GUI!!!"
-        while defender.get_current_hp() > 0 and attacker.get_current_hp() > 0:
-            # attacker_damage = attacker.get_attack_damage_range()
-            attacker_damage = random.randint(attacker.get_attack_min(), attacker.get_attack_max())
 
-            defender_new_hp = defender.get_current_hp()
 
-            defender_damage = random.randint(defender.get_attack_min(), defender.get_attack_max())
-            attacker_new_hp = attacker.get_current_hp()
+    def fight(self, attacker, defender):
+        attacker_damage = random.randint(attacker.get_attack_min(), attacker.get_attack_max())
+        defender_new_hp = defender.get_current_hp(self)
 
-            attcker_result = defender_new_hp - attacker_damage
-            defender_result = attacker_new_hp - defender_damage
+        defender_damage = random.randint(defender.get_attack_min(self), defender.get_attack_max(self))
+        attacker_new_hp = attacker.get_current_hp()
 
-            dodge_chance = random.uniform(.1, 1)
-            # character will attack another character
-            hit_chance = random.uniform(.1, 1)  # generates a random % chance of a successful attack by this character
-            if attacker.get_attack_speed() >= defender.get_attack_speed():
+        dodge_chance = random.uniform(.1, 1)
+        # character will attack another character
+        hit_chance = random.uniform(.1, 1)  # generates a random % chance of a successful attack by this character
+        if attacker.get_attack_speed() >= defender.get_attack_speed():
+            """Conditions placed here depending on button press"""
 
-                if attacker.get_chance_to_hit() >= hit_chance:
-                    if defender.get_chance_to_dodge() < dodge_chance:
-                        defender.set_current_hp(defender.get_current_hp() - attacker_damage)
-                        print(f"The {attacker} has dealt the {defender} {attacker_damage} damage to "
-                            f"their hp. The {defender} has {defender.get_current_hp()} hp.")
-                    else:
-                        print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
-                              f"The {defender} has {defender.get_current_hp()} hp.")
+            if attacker.get_chance_to_hit() >= hit_chance:
+                if defender.get_chance_to_dodge() < dodge_chance:
+                    defender.set_current_hp(defender.get_current_hp() - attacker_damage)  # make set to take_damage
+                    self.__game.announce(f"The {attacker} has dealt the {defender} {attacker_damage} damage to "
+                                         f"their hp. The {defender} has {defender.get_current_hp()} hp.")
                 else:
-                    print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
-                          f"The {defender} has {defender.get_current_hp()} hp.")
+                    self.__game.announce(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                         f"The {defender} has {defender.get_current_hp()} hp.")
+            else:
+                self.__game.announce(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                     f"The {defender} has {defender.get_current_hp()} hp.")
 
-                if defender.get_current_hp() > 0:
-                    if defender.get_chance_to_hit() >= hit_chance:
-                        if attacker.get_chance_to_dodge() < dodge_chance:
-                            attacker.set_current_hp(attacker.get_current_hp() - defender_damage)
-                            print(f"The {defender} has dealt the {attacker} {defender_damage} damage to"
-                                  f" their hp. The {attacker} has {attacker.get_current_hp()} hp.")
-                        else:
-                            print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
-                                  f"The {attacker} has {attacker.get_current_hp()} hp.")
-                    else:
-                        print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
-                              f"The {attacker} has {attacker.get_current_hp()} hp.")
-
-            elif attacker.get_attack_speed() < defender.get_attack_speed():
+            if defender.get_current_hp() > 0:
                 if defender.get_chance_to_hit() >= hit_chance:
                     if attacker.get_chance_to_dodge() < dodge_chance:
                         attacker.set_current_hp(attacker.get_current_hp() - defender_damage)
-                        print(f"The {defender} has dealt the {attacker} {defender_damage} damage to "
-                            f"their hp. The {attacker} has {attacker.get_current_hp()} hp.")
+                        self.__game.announce(f"The {defender} has dealt the {attacker} {defender_damage} damage to"
+                                             f" their hp. The {attacker} has {attacker.get_current_hp()} hp.")
                     else:
-                        print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
-                              f"The {attacker} has {attacker.get_current_hp()} hp.")
+                        self.__game.announce(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                             f"The {attacker} has {attacker.get_current_hp()} hp.")
                 else:
-                    print(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
-                          f"The {attacker} has {attacker.get_current_hp()} hp.")
+                    self.__game.announce(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                         f"The {attacker} has {attacker.get_current_hp()} hp.")
 
-                if attacker.get_current_hp() > 0:
-                    if attacker.get_chance_to_hit() >= hit_chance:
-                        if defender.get_chance_to_dodge() < dodge_chance:
-                            defender.set_current_hp(defender.get_current_hp() - attacker_damage)
-                            print(f"The {attacker} has dealt the {defender} {attacker_damage} damage to"
-                                  f" their hp. The {defender} has {defender.get_current_hp()} hp.")
-                        else:
-                            print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
-                                  f"The {defender} has {defender.get_current_hp()} hp.")
+    """Move most of this to DA_class and create GUI, The GUI must have buttons fight, use_potion, special move. the buttons will have conditions where if a button is pressed that action will
+    take place; elif another button is pressed, then that action happens. Then the monster will recipricate by striking"""
+    def combat(self, attacker, defender):
+        "Note. Get rid of the while statement when making a GUI!!!"
+        # while defender.get_current_hp() > 0 and attacker.get_current_hp() > 0:
+        # attacker_damage = attacker.get_attack_damage_range()
+        attacker_damage = random.randint(attacker.get_attack_min(), attacker.get_attack_max())
+        defender_new_hp = defender.get_current_hp(self)
+
+        defender_damage = random.randint(defender.get_attack_min(self), defender.get_attack_max(self))
+        attacker_new_hp = attacker.get_current_hp()
+
+        attcker_result = defender_new_hp - attacker_damage
+        defender_result = attacker_new_hp - defender_damage
+
+        dodge_chance = random.uniform(.1, 1)
+        # character will attack another character
+        hit_chance = random.uniform(.1, 1)  # generates a random % chance of a successful attack by this character
+        if attacker.get_attack_speed() >= defender.get_attack_speed():
+            """Conditions placed here depending on button press"""
+
+            if attacker.get_chance_to_hit() >= hit_chance:
+                if defender.get_chance_to_dodge() < dodge_chance:
+                    defender.set_current_hp(defender.get_current_hp() - attacker_damage)                            #make set to take_damage
+                    self.__game.announce(f"The {attacker} has dealt the {defender} {attacker_damage} damage to "
+                                         f"their hp. The {defender} has {defender.get_current_hp()} hp.")
+                else:
+                    self.__game.announce(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                         f"The {defender} has {defender.get_current_hp()} hp.")
+            else:
+                self.__game.announce(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                     f"The {defender} has {defender.get_current_hp()} hp.")
+
+            if defender.get_current_hp() > 0:
+                if defender.get_chance_to_hit() >= hit_chance:
+                    if attacker.get_chance_to_dodge() < dodge_chance:
+                        attacker.set_current_hp(attacker.get_current_hp() - defender_damage)
+                        self.__game.announce(f"The {defender} has dealt the {attacker} {defender_damage} damage to"
+                                             f" their hp. The {attacker} has {attacker.get_current_hp()} hp.")
                     else:
-                        print(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
-                              f"The {defender} has {defender.get_current_hp()} hp.")
+                        self.__game.announce(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                             f"The {attacker} has {attacker.get_current_hp()} hp.")
+                else:
+                    self.__game.announce(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                         f"The {attacker} has {attacker.get_current_hp()} hp.")
+
+        elif attacker.get_attack_speed() < defender.get_attack_speed():
+            if defender.get_chance_to_hit() >= hit_chance:
+                if attacker.get_chance_to_dodge() < dodge_chance:
+                    attacker.set_current_hp(attacker.get_current_hp() - defender_damage)
+                    self.__game.announce(f"The {defender} has dealt the {attacker} {defender_damage} damage to "
+                                         f"their hp. The {attacker} has {attacker.get_current_hp()} hp.")
+                else:
+                    self.__game.announce(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                         f"The {attacker} has {attacker.get_current_hp()} hp.")
+            else:
+                self.__game.announce(f"The {defender} has missed resulting in {0} damage to {attacker} hp."
+                                     f"The {attacker} has {attacker.get_current_hp()} hp.")
+
+
+            """Conditions placed here depending on button press"""
+            if attacker.get_current_hp() > 0:
+                if attacker.get_chance_to_hit() >= hit_chance:
+                    if defender.get_chance_to_dodge() < dodge_chance:
+                        defender.set_current_hp(defender.get_current_hp() - attacker_damage)
+                        self.__game.announce(f"The {attacker} has dealt the {defender} {attacker_damage} damage to"
+                                             f" their hp. The {defender} has {defender.get_current_hp()} hp.")
+                    else:
+                        self.__game.announce(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                             f"The {defender} has {defender.get_current_hp()} hp.")
+                else:
+                    self.__game.announce(f"The {attacker} has missed resulting in {0} damage to {defender} hp."
+                                         f"The {defender} has {defender.get_current_hp()} hp.")
 
         if attacker.get_current_hp() <= 0:
-            print(
+            self.__game.announce(
                 f"The {attacker} hp is {attacker.get_current_hp()}/{attacker.get_generated_hp}. You have died.")
             attacker.is_dead()
         elif defender.get_current_hp() <= 0:
-            print(
+            self.__game.announce(
                 f"The {defender} hp is {defender.get_current_hp()}/{defender.get_generated_hp}. The {defender}"
                 f" has died.")
 
@@ -252,7 +294,6 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         accuracy_str = f"Hit Chance: {round(self.__chance_to_hit_min * 100)}% to {round(self.__chance_to_hit_max * 100)}%"
 
         return [name_str, hp_str, attack_str, speed_str, dodge_str, accuracy_str]
-
 
 # kevin = DungeonCharacter("Kevin", 200, 300, 40, 80, 4, .70, .85, .30, .40)
 # talia = DungeonCharacter("Talia", 100, 200, 30, 80, 3, .60, .75, .20, .30)

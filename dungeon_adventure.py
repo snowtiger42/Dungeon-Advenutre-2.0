@@ -311,7 +311,6 @@ class DungeonAdventure:
         st_menu_button3 = tk.Button(text='Thief', font="Verdana 10 bold", width=10)
         self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
         st_menu_button3.config(command=lambda: self.__input_name("thief"))
-        choose_class = 3
 
     def __input_name(self, parameter):
         """
@@ -320,6 +319,8 @@ class DungeonAdventure:
 
         "Insures that only numbers can be put in the difficulty textbox"
         def __user_input_adventurer_name():
+            difficulty_max_value = 4
+            difficulty_min_value = 0
             numbers_only = re.compile("[0-9]*")
             attempt_difficulty = diff.get()
             if numbers_only.fullmatch(attempt_difficulty):
@@ -328,7 +329,7 @@ class DungeonAdventure:
                 print("Use numbers ya goof")
                 return
 
-            if 4 > int(self.__diff) > 0:
+            if difficulty_max_value > int(self.__diff) > difficulty_min_value:
                 if parameter == "warrior":
                     self.__hero = Warrior(hero_name.get(), self)
                 if parameter == "cleric":
