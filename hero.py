@@ -41,7 +41,7 @@ class Hero(DungeonCharacter):
         self.__chance_to_block = block_chance
 
     @abstractmethod
-    def special_move(self):
+    def special_move(self, defender):
         pass
 
     def earn_pillar(self, pillar):
@@ -67,7 +67,7 @@ class Hero(DungeonCharacter):
         self.__game.announce(f"You pick up a health potion.\nYou now have {self.__health_p} of them.")
         return self.__health_p
 
-    def use_health_potion(self):
+    def use_health_potion(self):  ####error not usable
         """
         If the Adventurer has any health potions, uses one and increases
         Adventurer's health by a random number.
@@ -85,12 +85,16 @@ class Hero(DungeonCharacter):
                 self.set_current_hp(new_hp)
 
             # print(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
-            self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+            self.__game.announce(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            self.__game.announce_battle_log(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+
             return True
 
         elif self.__health_p <= 0:
             # print("You reach for a health potion and find only disappointment.")
-            self.__game.announce("You reach for a health potion and find only disappointment.")
+            self.__game.announce(f"{self.get_name()} reach for a health potion and find only disappointment.")
+            self.__game.announce_battle_log(f"{self.get_name()} reach for a health potion and find only disappointment.")
+
             return False
 
     def add_vision_potion(self):
@@ -140,7 +144,7 @@ class Hero(DungeonCharacter):
         """
         Ends the game if the adventurer has all four pillars.  Makes an announcement either way.
         """
-        #reminder maxpillars = 4
+        # reminder maxpillars = 4
         if len(self.__pillars) >= self.__MAXPILLARS:
             # print("You have acquired the knowledge of all four pillars of OO! You leave the dungeon a better programmer!")
             # sys.exit()
@@ -152,25 +156,23 @@ class Hero(DungeonCharacter):
                                  "programming.")
             return
 
-    def combat(self, attacker, defender):
-        super().combat(attacker, defender)
-        defender_result = attacker.get_current_hp() - defender.get_attack_damage_range()
-        block_chance = random.uniform(.1, 1)
-
-        if attacker.__chance_to_block >= block_chance:
-            print(f"The {attacker} has successfully blocked, resulting in {0} damage to {attacker} hp."
-                  f"The {attacker} has {attacker.get_current_hp()} hp.")
-        else:
-            attacker.set_current_hp(attacker.get_current_hp() - defender.get_attack_damage_range())
-            print(f"The {attacker} has failed to block, resulting in {defender.get_attack_damage_range()} damage to the "
-                  f"{attacker} hp. The {attacker} has {attacker.get_current_hp()} hp.")
-
+    # def combat(self, attacker, defender):
+    #     super().combat(attacker, defender)
+    #     defender_result = attacker.get_current_hp() - defender.get_attack_damage_range()
+    #     block_chance = random.uniform(.1, 1)
+    #
+    #     if attacker.__chance_to_block >= block_chance:
+    #         print(f"The {attacker} has successfully blocked, resulting in {0} damage to {attacker} hp."
+    #               f"The {attacker} has {attacker.get_current_hp()} hp.")
+    #     else:
+    #         attacker.set_current_hp(attacker.get_current_hp() - defender.get_attack_damage_range())
+    #         print(f"The {attacker} has failed to block, resulting in {defender.get_attack_damage_range()} damage to the "
+    #               f"{attacker} hp. The {attacker} has {attacker.get_current_hp()} hp.")
 
     def __str__(self):
         """
         Returns a string representation of the Hero.
         """
-
         prefix = super().__str__()
         line1 = str(prefix[0])
         line2 = str(prefix[1])
@@ -212,10 +214,22 @@ class Hero(DungeonCharacter):
     def is_pillar_in_inventory(self, pillar):
         return pillar in self.__pillars
 
+    def take_damage(self, damage, source):
+        chance = random.uniform(.1, 1)
 
-# b = Hero("Kevin", Game(), 100, 200, 30, 80, 4, .60, .75, .20, .30, .30, .50)
-#
-# print(b)
+        if self.__chance_to_block >= chance:
+            self.__game.announce_battle_log(f"Block Successful")
+            super().take_damage(0, source)
+            self.__game.announce(f"\n")
+        else:
+            self.__game.announce_battle_log(f"Block Failed")
+            super().take_damage(damage, source)
+            self.__game.announce(f"\n")
+
+# kevin = Hero("Kevin", Game(), 200, 300, 40, 80, 4, .70, .85, .30, .40, .50, 75)
+# talia = Hero("Talia", Game(), 100, 200, 30, 80, 3, .30, .65, .20, .30, .2, .3)
+# kevin.fight(kevin, talia)
+
 #
 # print("\n------------------------print adventurer status ('empty', try using either potion)-------------------------")
 # b.use_health_potion()

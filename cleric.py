@@ -11,8 +11,10 @@ class Cleric(Hero):
     def __init__(self, name, game):
         super().__init__(name, game, 100, 175, 30, 60, 5, .75, .80, .4, .5, .30, .4)
         # self.__name = name
+        self.__game = game
 
-    def special_move(self):
+
+    def special_move(self, defender):
         reduced_chance_to_hit = (self.get_chance_to_hit()) / 2
         hitChance = random.uniform(.1, 1)
         heal = 66
@@ -23,11 +25,14 @@ class Cleric(Hero):
                 self.set_current_hp(self.get_generated_hp())
             else:
                 self.set_current_hp(new_hp)
-            self.__game.announce(f"You used the Heal ability! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            self.__game.announce_battle_log(f"You used the Heal ability! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            self.__game.announce_hero_stats(f"{self.attacker}")
+
             # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+
             return True
         else:
-            self.__game.announce(f"You tried to used the Heal ability, but it failed to work! It heals {0} HP, bringing you to "
+            self.__game.announce_battle_log(f"You tried to used the Heal ability, but it failed to work! It heals {0} HP, bringing you to "
                   f"{self.get_current_hp()}.")
             return False
 

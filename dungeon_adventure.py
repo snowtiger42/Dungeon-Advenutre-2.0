@@ -1,24 +1,31 @@
 import tkinter as tk
-# from adventurer import Adventurer
 from warrior import Warrior
 from thief import Thief
 from cleric import Cleric
-from dungeonCharacter import DungeonCharacter
-from hero import Hero
+# from dungeonCharacter import DungeonCharacter
+# from hero import Hero
+
+# from raven import Raven
+from emu import Emu
+# from sphinx import Sphinx
+# from phonenix import Phoenix
+
 from dungeon import Dungeon
 
 # import PIL
+from practice_gui import Practice_gui
 # from PIL import ImageTk, Image
 
 from tkinter import *
 import re
+from mock_game import MockGame as Game
 
 
 class DungeonAdventure:
     def __init__(self):
         self.__dungeon = None
         self.__hero = None
-        self.__warrior = None
+        self.__monster = Emu(1, "Emu", Game())
         self.__diff = 1
         self.__root = tk.Tk()
         self.__window_size = (1150, 875)
@@ -57,7 +64,7 @@ class DungeonAdventure:
         self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
         self.__start_canvas.configure(bg="#FFBF90")
 
-        self.__start_canvas.pack(expand=True)
+        self.__start_canvas.pack(expand=False)
 
         self.__root.bind("<Button-1>", self.__advance_intro)
 
@@ -106,11 +113,11 @@ class DungeonAdventure:
             self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
             self.__start_canvas.pack(expand=True)
 
-            self.__title_image = tk.PhotoImage(file="title.png")
+            self.__title_image = tk.PhotoImage(file="DA_title.png")
             self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
                                              image=self.__title_image)
         else:
-            self.__reset_start_canvas("assets_title.png")
+            self.__reset_start_canvas("DA_title.png")
 
         # --Buttons
         button_y = self.__window_size[1] // 2 + 240
@@ -189,12 +196,118 @@ class DungeonAdventure:
         self.__start_canvas.destroy()
         self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
         self.__start_canvas.configure(bg="#FFBF90")
-        self.__start_canvas.pack(expand=True)
+        self.__start_canvas.pack(expand=False)
 
         if file_str:
             self.__title_image = tk.PhotoImage(file=file_str)
             self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
                                              image=self.__title_image)
+
+    # def combat(self):
+    #     self.__reset_start_canvas(None)
+    #
+    #     # Setup dungeon & get size
+    #     self.__dungeon = Dungeon(self.__diff, self, self.__hero)
+    #     textbox_size = self.__dungeon.get_size() * 2
+    #     tb_y = self.__window_size[1] // 2
+    #
+    #     # build Hero textbox
+    #     self.__hero_text = tk.Text(self.__start_canvas, width=30, height=15)
+    #     self.__hero_text.place(x=0, y=tb_y, anchor="w")
+    #
+    #     spacer = "\n" * ((textbox_size - 10) // 2)
+    #     self.__hero_text.insert("end", f"         *****Hero Stats*****    {self.__hero}")
+    #     # self.__legend.config(state="disabled") #probably get rid og disabled
+    #
+    #     # build Monster textbox
+    #     self.__monster_text = tk.Text(self.__start_canvas, width=30, height=20)
+    #     self.__monster_text.place(x=self.__window_size[0], y=tb_y, anchor="e")
+    #
+    #     self.__monster_text.insert("end", f"         *****Monster Stats*****     {self.__monster}")
+    #     # self.__monster_text.config(state="disabled")
+    #
+    #     # build textbox
+    #     self.__message_log = tk.Text(self.__start_canvas, width=60, height=50)
+    #     self.__message_log.place(x=self.__window_size[0] // 2, y=tb_y, anchor=CENTER)
+    #
+    #     self.__message_log.insert("end", f"            ")
+    #     # self.__message_log.config(state="disabled")
+    #     # build dungeon display
+    #     # self.__dungeon_display = tk.Text(self.__start_canvas, width=textbox_size, height=textbox_size)
+    #     # self.__dungeon_display.place(x=self.__window_size[0] // 2, y=tb_y, anchor=CENTER)
+    #
+    #
+    #
+    #     # --Buttons
+    #     button_y = self.__window_size[1] // 2 + 240
+    #     button_x = self.__window_size[0] // 2 - 40
+    #
+    #     st_menu_button1 = tk.Button(text='Fight', font="Verdana 10 bold", width=12)
+    #     self.__start_canvas.create_window(button_x - 450, button_y, window=st_menu_button1)
+    #
+    #     # self.__start_canvas.create_window(button_x, button_y - 400, window=st_menu_button1)
+    #     st_menu_button1.config(command= lambda:self.combat_commands(self.__hero, self.__monster, "Fight"))
+    #
+    #     # st_menu_button1.config(command= lambda:self.test_damage("hero"))
+    #
+    #     st_menu_button2 = tk.Button(text='Special Move', font="Verdana 10 bold", width=12)
+    #     self.__start_canvas.create_window(button_x, button_y, window=st_menu_button2)
+    #
+    #     # self.__start_canvas.create_window(button_x, button_y - 250, window=st_menu_button2)
+    #     st_menu_button2.config(command=lambda: self.combat_commands(self.__hero, self.__monster, "Special Move"))
+    #     # st_menu_button2.config(command=lambda: self.__input_name("cleric"))
+    #
+    #     st_menu_button3 = tk.Button(text='Use Potion', font="Verdana 10 bold", width=12)
+    #     self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+    #
+    #     # self.__start_canvas.create_window(button_x, button_y - 100, window=st_menu_button3)
+    #     st_menu_button3.config(command=lambda: self.combat_commands(self.__hero, self.__monster, "Potion"))
+    #     # st_menu_button3.config(command=lambda: self.test_damage("monster"))
+    #
+    #
+    # def combat_commands(self, attacker, defender, choice):
+    #
+    #     if self.__hero.get_current_hp() <= 0 or self.__monster.get_current_hp() <= 0:
+    #         self.__root.destroy()
+    #     # attacker = self.__hero
+    #
+    #     # if self.__monster == Emu(self.__diff, "Emu", Game()):
+    #     #     return defender == self.__monster
+    #     # elif self.__monster == Raven(self.__diff, "Raven", Game()):
+    #     #     return defender == self.__monster
+    #     # elif self.__monster == Phoenix(self.__diff, "Phoenix", Game()):
+    #     #     return defender == self.__monster
+    #     # elif self.__monster == Sphinx(self.__diff, "Sphinx", Game()):
+    #     #     return defender == self.__monster
+    #
+    #     if choice == "Fight":
+    #         return attacker.fight(attacker, defender), defender.fight(defender, attacker)
+    #     elif choice == "Special Move":
+    #         # if self.__input_name(parameter) == "warrior":
+    #         # if self.__input_name("warrior"):
+    #         # # if self.__hero == Warrior(self.__hero.get_name(), Game()):
+    #         #     return attacker.special_move(defender)
+    #         # elif self.__input_name("cleric"):
+    #         #     return attacker.special_move(defender)
+    #         # elif self.__input_name("thief"):
+    #         #     return attacker.special_move(attacker)
+    #         return attacker.special_move(defender), defender.fight(defender, attacker)
+    #     elif choice == "Potion":
+    #         return attacker.use_health_potion(), defender.fight(defender, attacker)
+    #
+    #
+    #
+    #
+    #
+    #
+    #
+    # def test_damage(self, choice):
+    #     if choice == "hero":
+    #         self.__hero.take_damage(100, self.__monster)
+    #     elif choice == "monster":
+    #         self.__monster.take_damage(100, self.__hero)
+
+
 
     ##################################
     #         Menu Methods
@@ -311,7 +424,6 @@ class DungeonAdventure:
         st_menu_button3 = tk.Button(text='Thief', font="Verdana 10 bold", width=10)
         self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
         st_menu_button3.config(command=lambda: self.__input_name("thief"))
-        choose_class = 3
 
     def __input_name(self, parameter):
         """
@@ -320,6 +432,9 @@ class DungeonAdventure:
 
         "Insures that only numbers can be put in the difficulty textbox"
         def __user_input_adventurer_name():
+            difficulty_max_value = 4
+            difficulty_min_value = 0
+
             numbers_only = re.compile("[0-9]*")
             attempt_difficulty = diff.get()
             if numbers_only.fullmatch(attempt_difficulty):
@@ -328,7 +443,7 @@ class DungeonAdventure:
                 print("Use numbers ya goof")
                 return
 
-            if 4 > int(self.__diff) > 0:
+            if difficulty_max_value > int(self.__diff) > difficulty_min_value:
                 if parameter == "warrior":
                     self.__hero = Warrior(hero_name.get(), self)
                 if parameter == "cleric":
@@ -336,13 +451,14 @@ class DungeonAdventure:
                 if parameter == "thief":
                     self.__hero = Thief(hero_name.get(), self)
                 self.__reset_start_canvas("assets_background.png")
+                # self.combat()
                 self.__start_game()
                 return
 
             else:
                 print("Please enter a difficulty between 1 and 3.")
 
-        self.__reset_start_canvas("assets_title.png")
+        self.__reset_start_canvas("DA_title.png")
 
         button_y = self.__window_size[1] // 2 + 240
         button_x = self.__window_size[0] // 2 - 100
@@ -510,7 +626,7 @@ class DungeonAdventure:
         self.__dungeon_display.insert("1.0", self.__dungeon.__str__(), "center")
         self.__dungeon_display.config(state="disabled")
 
-    def announce(self, message):
+    def announce(self, message): #change battle log back to announce if no sucess (be sure to fix all classes that changed to self.__announce_battle_log)
         """
         Given a string, prints it to the message log
         """
@@ -530,6 +646,77 @@ class DungeonAdventure:
         self.__message_log.delete("1.0", "end")
         self.__message_log.insert("end", log_text)
         self.__message_log.config(state="disabled")
+
+    def announce_battle_log(self, message):
+        """
+        Given a string, prints it to the message log
+        """
+
+        Practice_gui.announce_battle_log(Practice_gui(), message)
+
+        # log_text = self.__battle_log.get("1.0", "end")
+        # log_text += message
+        # log_text = log_text.split("\n")
+        #
+        # log_length = self.__dungeon.get_size() * 3 - 5
+        #
+        # if len(log_text) > log_length:
+        #     log_text = log_text[-log_length:]
+        #
+        # log_text = "\n".join(log_text)
+        #
+        # self.__battle_log.config(state="normal")
+        # self.__battle_log.delete("1.0", "end")
+        # self.__battle_log.insert("end", log_text)
+        # self.__battle_log.config(state="disabled")
+
+    def announce_hero_stats(self, message):
+        """
+        Given a string, prints it to the message log
+        """
+
+        Practice_gui.announce_hero_stats(self, message)
+
+
+        # log_text = self.__hero_text.get("1.0", "end")
+        # log_text += message
+        # log_text = log_text.split("\n")
+        #
+        # log_length = self.__dungeon.get_size() * 3 - 5
+        #
+        # if len(log_text) > log_length:
+        #     log_text = log_text[-log_length:]
+        #
+        # log_text = "\n".join(log_text)
+        #
+        # self.__hero_text.config(state="normal")
+        # self.__hero_text.delete("1.0", "end")
+        # self.__hero_text.insert("end", log_text)
+        # self.__hero_text.config(state="disabled")
+
+    def announce_monster_stats(self, message):
+        """
+        Given a string, prints it to the message log
+        """
+
+        Practice_gui.announce_monster_stats(self, message)
+        # practice_gui.announce_monster_stats()
+
+        # log_text = self.__monster_text.get("1.0", "end")
+        # log_text += message
+        # log_text = log_text.split("\n")
+        #
+        # log_length = self.__dungeon.get_size() * 3 - 5
+        #
+        # if len(log_text) > log_length:
+        #     log_text = log_text[-log_length:]
+        #
+        # log_text = "\n".join(log_text)
+        #
+        # self.__monster_text.config(state="normal")
+        # self.__monster_text.delete("1.0", "end")
+        # self.__monster_text.insert("end", log_text)
+        # self.__monster_text.config(state="disabled")
 
     def end_game(self):
         """

@@ -1,5 +1,8 @@
 import random
-from combatMode import CombatMode
+from typing import Optional, List
+
+# from combatMode import CombatMode
+from practice_gui import Practice_gui
 from phonenix import Phoenix
 from warrior import Warrior
 from thief import Thief
@@ -112,20 +115,15 @@ class Dungeon:
         # check that sufficient rooms were generated
         room_cutoff = self.__size * self.__size * .85
         if self.__room_count < room_cutoff:
-            # print("Maze too small!  Regenerating...")
             self.__clear_dungeon()
             self.generate()
             return
 
         # check that all pillars and exit were placed
         if not self.__validate_maze():
-            # print("Objective placement failed!  Regenerating...")
             self.__clear_dungeon()
             self.generate()
             return
-
-        # print(self.display(3))
-        # print(self)
 
     def __validate_maze(self):
         """
@@ -251,7 +249,7 @@ class Dungeon:
             room2.link(room1, compliment[dir])
         return
 
-    def __get_room_at(self, location) -> Room:
+    def __get_room_at(self, location) -> Optional[list[None]]:
         """
         Helper method that takes a tuple with x/y coordinates
         and returns the object at that location in room_array
