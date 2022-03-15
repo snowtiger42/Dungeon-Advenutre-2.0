@@ -1,29 +1,33 @@
 import random
 
-from monster import Monster
+# from monster import Monster
 from phonenix import Phoenix
 from emu import Emu
 from raven import Raven
+from sphinx import Sphinx
+
 from mock_game import MockGame as Game
+from battleground import Battleground
 
 
 class Room:
     def __init__(self, room_id, location):
+        self.__diff = 1
         # self.__game = game
+        self.__monster = None
         self.__phoenix = Phoenix
-        self.__phoenix = False
-        if random.random() < 0.1:
-            self.__phoenix = True
+        # self.__phoenix = False
+        # if random.random() < 0.1:
+        #     self.__phoenix = True
 
         self.__emu = Emu
         self.__emu = False
         self.__raven = Raven
         self.__raven = False
-        if random.random() < 0.1:
+        if random.random() < 0.06:
             self.__emu = True
-        elif random.random() < 0.1:
+        elif random.random() < 0.06:
             self.__raven = True
-
 
         self.__health_p = False
         if random.random() < 0.1:
@@ -151,6 +155,9 @@ class Room:
         self.__health_p = False
         self.__pit = False
         self.__vision_p = False
+        self.__raven = False
+        self.__emu = False
+
 
     def set_as_exit(self):
         """
@@ -198,16 +205,17 @@ class Room:
         if self.__pit:
             war.take_damage(self.__pit, "a pit trap")
         if self.__emu:
-
-            # war.combat(war, Emu)
-            # war.fight(war, Emu)
-            self.__game.announce(Game(), f"The Hero {war} has found the {self.__emu}")
-
-            # print(f"The Hero {war} has found the {self.__emu.__str__()}")
-
+            self.__game.announce(Game(), f"The Hero {war} has found the EMU")
+            self.__emu = False
+            self.__monster = Emu(self.__diff, "Emu", Game())
+            battleground = Battleground()
+            battleground.combat(war, self.__monster)
         if self.__raven:
-            self.__game.announce(Game(), f"The Hero {war} has found the  RAVEN {self.__raven}")
-
+            self.__game.announce(Game(), f"The Hero {war} has found the RAVEN")
+            self.__raven = False
+            self.__monster = Raven(self.__diff, "Raven", Game())
+            battleground = Battleground()
+            battleground.combat(war, self.__monster)
 
         self.__has_player = True
 
