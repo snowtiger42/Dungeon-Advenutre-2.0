@@ -1,12 +1,13 @@
 from abc import ABCMeta, abstractmethod
 import random
 from monster import Monster
+from mock_game import MockGame as Game
 
 
 class Phoenix(Monster):
     def __init__(self, diff, name, game):
-        super().__init__(name, game, 250, 333, 33, 44, 3, .60, .75, .3, .5,
-                         .30, .5, 20)
+        super().__init__(name, game, 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20)
+        self.__game = game
         self.__diff = diff
         self.__name = name
 
@@ -21,7 +22,7 @@ class Phoenix(Monster):
         self.__name = "Phoenix"
 
 
-# p = Phoenix(1, "Phoenix")
+# p = Phoenix(1, "Phoenix", Game())
 # print(p)
 #
 # p.take_damage(1000, "Hero")
