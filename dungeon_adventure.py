@@ -1,24 +1,31 @@
 import tkinter as tk
-# from adventurer import Adventurer
 from warrior import Warrior
 from thief import Thief
 from cleric import Cleric
-from dungeonCharacter import DungeonCharacter
-from hero import Hero
+# from dungeonCharacter import DungeonCharacter
+# from hero import Hero
+
+# from raven import Raven
+from emu import Emu
+# from sphinx import Sphinx
+# from phonenix import Phoenix
+
 from dungeon import Dungeon
 
 # import PIL
+# from practice_gui import Practice_gui
 # from PIL import ImageTk, Image
 
 from tkinter import *
 import re
+from mock_game import MockGame as Game
 
 
 class DungeonAdventure:
     def __init__(self):
         self.__dungeon = None
         self.__hero = None
-        self.__warrior = None
+        self.__monster = Emu(1, "Emu", Game())
         self.__diff = 1
         self.__root = tk.Tk()
         self.__window_size = (1150, 875)
@@ -28,7 +35,6 @@ class DungeonAdventure:
         self.__intro_slide = 0
 
         self.__start_canvas = None
-
         self.__dungeon_display = None
         self.__message_log = None
         self.__legend = None
@@ -57,7 +63,7 @@ class DungeonAdventure:
         self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
         self.__start_canvas.configure(bg="#FFBF90")
 
-        self.__start_canvas.pack(expand=True)
+        self.__start_canvas.pack(expand=False)
 
         self.__root.bind("<Button-1>", self.__advance_intro)
 
@@ -75,23 +81,23 @@ class DungeonAdventure:
             self.__intro_slide += 1
         elif self.__intro_slide == 1:
             self.__title_image = tk.PhotoImage(file="assets_intro_2.png")
-            self.__start_canvas.create_image(
-                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
+                                             image=self.__title_image)
             self.__intro_slide += 1
         elif self.__intro_slide == 2:
             self.__title_image = tk.PhotoImage(file="assets_intro_3.png")
-            self.__start_canvas.create_image(
-                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
+                                             image=self.__title_image)
             self.__intro_slide += 1
         elif self.__intro_slide == 3:
             self.__title_image = tk.PhotoImage(file="assets_controls.png")
-            self.__start_canvas.create_image(
-                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2,
+                                             anchor=CENTER, image=self.__title_image)
             self.__intro_slide += 1
         elif self.__intro_slide == 4:
             self.__title_image = tk.PhotoImage(file="assets_objectives.png")
-            self.__start_canvas.create_image(
-                self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
+                                             image=self.__title_image)
             self.__intro_slide += 1
         elif self.__intro_slide == 5:
             self.__start_canvas.destroy()
@@ -106,11 +112,11 @@ class DungeonAdventure:
             self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
             self.__start_canvas.pack(expand=True)
 
-            self.__title_image = tk.PhotoImage(file="title.png")
+            self.__title_image = tk.PhotoImage(file="DA_title_bigger.png")
             self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
                                              image=self.__title_image)
         else:
-            self.__reset_start_canvas("assets_title.png")
+            self.__reset_start_canvas("DA_title_bigger.png")
 
         # --Buttons
         button_y = self.__window_size[1] // 2 + 240
@@ -150,7 +156,8 @@ class DungeonAdventure:
                                              "A = pillar of Abstraction\n    E = Pillar of Encapsulation\n    "
                                              "I = Pillar of Inheritance\n    ""P = Pillar of Polymorphism\n    "
                                              "0 = Exit\n    X = Pit (watch out!)\n    H = Health Potion\n    "
-                                             "V = Vision Potion\n    M = Both Potions\n    | = Wall")
+                                             "V = Vision Potion\n    B = Both Potions\n    ! = Emu\n    ? = Raven\n"
+                                             "    | = Wall")
         self.__legend.config(state="disabled")
 
         # build dungeon display
@@ -188,8 +195,8 @@ class DungeonAdventure:
         """
         self.__start_canvas.destroy()
         self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
-        self.__start_canvas.configure(bg="#FFBF90")
-        self.__start_canvas.pack(expand=True)
+        self.__start_canvas.configure(bg="#000000")
+        self.__start_canvas.pack(expand=False)
 
         if file_str:
             self.__title_image = tk.PhotoImage(file=file_str)
@@ -231,8 +238,6 @@ class DungeonAdventure:
         editmenu.add_command(label="Paste", command=self.__donothing)
         editmenu.add_command(label="Delete", command=self.__donothing)
         editmenu.add_command(label="Select All", command=self.__donothing)
-
-
 
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Cheats", command=self.__display_cheats)
@@ -311,7 +316,6 @@ class DungeonAdventure:
         st_menu_button3 = tk.Button(text='Thief', font="Verdana 10 bold", width=10)
         self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
         st_menu_button3.config(command=lambda: self.__input_name("thief"))
-        choose_class = 3
 
     def __input_name(self, parameter):
         """
@@ -320,6 +324,9 @@ class DungeonAdventure:
 
         "Insures that only numbers can be put in the difficulty textbox"
         def __user_input_adventurer_name():
+            difficulty_max_value = 4
+            difficulty_min_value = 0
+
             numbers_only = re.compile("[0-9]*")
             attempt_difficulty = diff.get()
             if numbers_only.fullmatch(attempt_difficulty):
@@ -328,7 +335,7 @@ class DungeonAdventure:
                 print("Use numbers ya goof")
                 return
 
-            if 4 > int(self.__diff) > 0:
+            if difficulty_max_value > int(self.__diff) > difficulty_min_value:
                 if parameter == "warrior":
                     self.__hero = Warrior(hero_name.get(), self)
                 if parameter == "cleric":
@@ -336,13 +343,14 @@ class DungeonAdventure:
                 if parameter == "thief":
                     self.__hero = Thief(hero_name.get(), self)
                 self.__reset_start_canvas("assets_background.png")
+                # self.combat()
                 self.__start_game()
                 return
 
             else:
                 print("Please enter a difficulty between 1 and 3.")
 
-        self.__reset_start_canvas("assets_title.png")
+        self.__reset_start_canvas("DA_title_bigger.png")
 
         button_y = self.__window_size[1] // 2 + 240
         button_x = self.__window_size[0] // 2 - 100
@@ -510,7 +518,7 @@ class DungeonAdventure:
         self.__dungeon_display.insert("1.0", self.__dungeon.__str__(), "center")
         self.__dungeon_display.config(state="disabled")
 
-    def announce(self, message):
+    def announce(self, message): #change battle log back to announce if no sucess (be sure to fix all classes that changed to self.__announce_battle_log)
         """
         Given a string, prints it to the message log
         """
