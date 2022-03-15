@@ -1,8 +1,8 @@
 import random
-import self as self
-# from dungeonCharacter import DungeonCharacter
-from mock_game import MockGame as Game
+# from mock_game import MockGame as Game
 from hero import Hero
+from mockannouncement import MockAnnouncement as Announce
+
 
 
 class Warrior(Hero):
@@ -11,36 +11,51 @@ class Warrior(Hero):
     """
 
     def __init__(self, name, game):
-        super().__init__(name, game, 150, 200, 30, 80, 4, .60, .75, .3, .4, .30, .5)
-        # self.__name = name
-        # self.__game = game
+        super().__init__(name, game, 200, 300, 30, 90, 4, .70, .80, .3, .4, .30, .5)
+        self.__game = game
+        self.announce = Announce()
 
-    def special_move(self):
+
+    def special_move(self, defender):
         if self.get_current_hp() <= 0:
             self.is_dead()
+
         reduced_chance_to_hit = (self.get_chance_to_hit()) / 2
         hitChance = random.uniform(.1, 1)
         damage = (self.get_attack_damage_range()) * 3
 
         if reduced_chance_to_hit >= hitChance:
-            new_hp = self.get_current_hp()
+            new_hp = defender.get_current_hp()
             result = new_hp - damage
 
-            if result <= self.get_generated_hp():
-                self.set_current_hp(0)
+            if result >= defender.get_generated_hp():
+                defender.set_current_hp(0)
+                self.announce.announce(f"{self.get_name()} used the Crushing Blow ability! It deals {damage} damage, "
+                                       f"bringing {defender.get_name()} HP to {defender.get_current_hp()}.\n")
+                self.announce.announce_monster_stats(f"{defender}")
             else:
-                self.set_current_hp(result)
-            self.__game.announce(f"You used the Crushing Blow ability! It deals {damage} damage, bringing your opponent's HP to "
-                  f"{self.get_current_hp()}.")
+                defender.set_current_hp(result)
+                self.announce.announce(f"{self.get_name()} used the Crushing Blow ability! It deals {damage} damage, "
+                                     f"bringing {defender.get_name()} HP to {defender.get_current_hp()}.\n")
+                self.announce.announce_monster_stats(f"{defender}")
             return True
         else:
-            self.__game.announce(f"You used the Crushing Blow ability and Missed! It deals {0} damage, bringing your opponent's HP to "
-                  f"{self.get_current_hp()}.")
+            self.announce.announce(f"{self.get_name()} used the Crushing Blow ability and Missed! It deals {0} damage, "
+                                 f"bringing {defender.get_name()}  HP to {defender.get_current_hp()}.\n")
             return False
 
+
 # adventurer = Warrior("Pranav", Game())
-# # me = Warrior("Kevin")
+# me = Warrior("Kevin", Game())
 # print(adventurer)
+# print(me)
+#
+# me.fight(me, adventurer)
+# me.special_move()
+#
+# print(adventurer)
+# print(me)
+
 # print("my name is ", adventurer.get_name())
 # print(me)
 #
