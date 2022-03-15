@@ -1,55 +1,60 @@
 import random
-import self as self
-from dungeonCharacter import DungeonCharacter
-from mock_game import MockGame as Game
+# from mock_game import MockGame as Game
 from hero import Hero
+from mockannouncement import MockAnnouncement as Announce
 
 
 class Thief(Hero):
     """
     A class the handles information for the Thief
     """
-    def __init__(self, name, game):
-        super().__init__(name, game, 100, 150, 30, 50, 7, .80, .90, .5, .6, .2, .25)
-        # self.__name = name
 
-    def special_move(self):
-        if self.get_current_hp() <= 0:
-            self.is_dead()
+    def __init__(self, name, game):
+        super().__init__(name, game, 200, 250, 30, 66, 7, .90, .99, .5, .75, .2, .25)
+        # self.__name = name
+        self.__game = game
+        self.announce = Announce()
+
+
+    def special_move(self, defender):
+        if defender.get_current_hp() <= 0:
+            defender.is_dead()
 
         second_chance_to_hit = (self.get_chance_to_hit()) / 2
         hitChance = random.uniform(.1, 1)
         damage = (self.get_attack_damage_range()) * 2
 
         if second_chance_to_hit >= hitChance:
-            new_hp = self.get_current_hp()
+            new_hp = defender.get_current_hp()
             result = new_hp - damage
 
-            if result <= self.get_generated_hp():
-                self.set_current_hp(0)
-                self.__game.announce(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, bringing your "
-                      f"opponent's HP to {self.get_current_hp()}.")
+            if result >= defender.get_generated_hp():
+                defender.set_current_hp(0)
             else:
-                self.set_current_hp(result)
-                self.__game.announce(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, bringing your "
-                      f"opponent's HP to {self.get_current_hp()}.")
+                defender.set_current_hp(result)
+            self.announce.announce(f"You used the Sneak Attack ability, and strike twice! It deals {damage} damage, "
+                                   f"bringing your \nopponent's HP to {defender.get_current_hp()}.\n")
+            self.announce.announce_monster_stats(f"{defender}")
+
             return True
 
         elif second_chance_to_hit >= hitChance / 2:
-            new_hp = self.get_current_hp()
+            new_hp = defender.get_current_hp()
             result = new_hp - (damage // 2)
 
-            if result >= self.get_generated_hp():
-                self.set_current_hp(0)
+            if result >= defender.get_generated_hp():
+                defender.set_current_hp(0)
             else:
-                self.set_current_hp(result)
-            self.__game.announce(f"You used the Sneak Attack ability, but you were spotted just in time! You strike only once and deal "
-                  f"{damage // 2} damage, bringing your "f"opponent's HP to {self.get_current_hp()}.")
-        else:
-            self.__game.announce(f"You used the Sneak Attack ability and Missed! It deals {0} damage, bringing your opponent's HP to "
-                  f"{self.get_current_hp()}.")
-            return False
+                defender.set_current_hp(result)
+            self.announce.announce(f"You used the Sneak Attack ability, but you were spotted just in time! You strike "
+                                   f"only once and deal {damage // 2} damage, bringing your "f"opponent's HP to \n"
+                                   f"{defender.get_current_hp()}.\n")
+            self.announce.announce_monster_stats(f"{defender}")
 
+        else:
+            self.announce.announce(f"You used the Sneak Attack ability and Missed! It deals {0} damage, bringing your "
+                                   f"opponent's HP to \n{defender.get_current_hp()}.\n")
+            return False
 
 # thief = Thief("Kevin")
 # print(thief)
@@ -68,6 +73,3 @@ class Thief(Hero):
 # thief.use_health_potion()
 #
 # print(thief)
-
-
-
