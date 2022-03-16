@@ -37,6 +37,99 @@ class DungeonAdventure:
         self.__game_over = False
 
         self.__make_help_menu()
+        self.__initialize_intro()
+
+    def start_loop(self):
+        """
+        Begins the main loop
+        """
+        self.__root.mainloop()
+
+    ##################################
+    #          GUI methods
+    ##################################
+
+    def __initialize_intro(self):
+        """
+        Sets up canvas for intro slides, then calls the intro method.
+        """
+
+        self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
+        self.__start_canvas.configure(bg="#FFBF90")
+
+        self.__start_canvas.pack(expand=True)
+
+        self.__root.bind("<Button-1>", self.__advance_intro)
+
+        self.__advance_intro(None)
+
+    def __advance_intro(self, keypress): #Replace some of the slides to explain new features/show the names of the new developers
+        """
+        Each time the method is called, changes the image to create a pseudo-slideshow.
+        When the last slide is reached, calls the start menu.
+        """
+        pass
+        # if self.__intro_slide == 0:
+        #     self.__title_image = tk.PhotoImage(file="assets_intro_1.png")
+        #     self.__start_canvas.create_image(
+        #         self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+        #     self.__intro_slide += 1
+        # elif self.__intro_slide == 1:
+        #     self.__title_image = tk.PhotoImage(file="assets_intro_2.png")
+        #     self.__start_canvas.create_image(
+        #         self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+        #     self.__intro_slide += 1
+        # elif self.__intro_slide == 2:
+        #     self.__title_image = tk.PhotoImage(file="assets_intro_3.png")
+        #     self.__start_canvas.create_image(
+        #         self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+        #     self.__intro_slide += 1
+        # elif self.__intro_slide == 3:
+        #     self.__title_image = tk.PhotoImage(file="assets_controls.png")
+        #     self.__start_canvas.create_image(
+        #         self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+        #     self.__intro_slide += 1
+        # elif self.__intro_slide == 4:
+        #     self.__title_image = tk.PhotoImage(file="assets_objectives.png")
+        #     self.__start_canvas.create_image(
+        #         self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER, image=self.__title_image)
+        #     self.__intro_slide += 1
+        # elif self.__intro_slide == 5:
+        #     self.__start_canvas.destroy()
+        #     self.__root.unbind("<Button-1>")
+        #     self.__start_menu()
+
+    def __start_menu(self):
+        """
+        Creates and displays the start menu.
+        """
+        if not self.__start_canvas:
+            self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
+            self.__start_canvas.pack(expand=True)
+
+            self.__title_image = tk.PhotoImage(file="title.png")
+            self.__start_canvas.create_image(self.__window_size[0] // 2, self.__window_size[1] // 2, anchor=CENTER,
+                                             image=self.__title_image)
+        else:
+            self.__reset_start_canvas("assets_title.png")
+
+        # --Buttons
+        button_y = self.__window_size[1] // 2 + 240
+        button_x = self.__window_size[0] // 2 - 40
+
+        st_menu_button1 = tk.Button(text='Start', font="Verdana 10 bold", width=5)
+        self.__start_canvas.create_window(button_x - 260, button_y, window=st_menu_button1)
+        st_menu_button1.config(command=self.__choose_class)
+
+        # st_menu_button1.config(command=self.__input_name)
+
+        st_menu_button2 = tk.Button(text='Instruction', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x, button_y, window=st_menu_button2)
+        st_menu_button2.config(command=self.__display_instructions)
+
+        st_menu_button3 = tk.Button(text='Quit', font="Verdana 10 bold", width=5)
+        self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+        st_menu_button3.config(command=quit)
 
     def __start_game(self):
         """
@@ -140,6 +233,8 @@ class DungeonAdventure:
         editmenu.add_command(label="Delete", command=self.__donothing)
         editmenu.add_command(label="Select All", command=self.__donothing)
 
+
+
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Cheats", command=self.__display_cheats)
         help_menu.add_command(label="Dungeon Key", command=self.__dungeon_key_images)
@@ -200,14 +295,31 @@ class DungeonAdventure:
     ##################################
     #         Instantiate hero
     ##################################
+    def __choose_class(self):
 
-    def input_name(self, parameter):
+        # --Buttons
+        button_y = self.__window_size[1] // 2 + 240
+        button_x = self.__window_size[0] // 2 - 40
+
+        st_menu_button1 = tk.Button(text='Warrior', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x - 260, button_y, window=st_menu_button1)
+        st_menu_button1.config(command= lambda:self.__input_name("warrior"))
+
+        st_menu_button2 = tk.Button(text='Cleric', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x, button_y, window=st_menu_button2)
+        st_menu_button2.config(command=lambda: self.__input_name("cleric"))
+
+        st_menu_button3 = tk.Button(text='Thief', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x + 260, button_y, window=st_menu_button3)
+        st_menu_button3.config(command=lambda: self.__input_name("thief"))
+        choose_class = 3
+
+    def __input_name(self, parameter):
         """
         Replaces start menu with entry fields for player name and difficulty.
         """
 
         "Insures that only numbers can be put in the difficulty textbox"
-
         def __user_input_adventurer_name():
             numbers_only = re.compile("[0-9]*")
             attempt_difficulty = diff.get()
@@ -224,14 +336,14 @@ class DungeonAdventure:
                     self.__hero = Cleric(hero_name.get(), self)
                 if parameter == "thief":
                     self.__hero = Thief(hero_name.get(), self)
-                # self.__reset_start_canvas("assets_background.png")
+                self.__reset_start_canvas("assets_background.png")
                 self.__start_game()
                 return
 
             else:
                 print("Please enter a difficulty between 1 and 3.")
 
-        # self.__reset_start_canvas("assets_title.png")
+        self.__reset_start_canvas("assets_title.png")
 
         button_y = self.__window_size[1] // 2 + 240
         button_x = self.__window_size[0] // 2 - 100
@@ -253,6 +365,26 @@ class DungeonAdventure:
 
         tk.Button(self.__start_canvas,
                   text='Accept', command=__user_input_adventurer_name).place(x=button_x + 200, y=button_y - 40)
+
+    def __display_instructions(self):
+        """
+        Gives the player a briefing on how to play the game.
+        """
+        instructions = Toplevel(self.__root)
+        instructions.title("Instructions")
+
+        button = Button(instructions, font="Verdana 19 bold", text="""Welcome!!! You are about to brave our maze 
+        inorder to find the four pillars of OO! Only by collecting these four pillars, will you be able to escape the 
+        maze and win the game. In this maze, you will use the 'w' letter to head up, the 'd' letter to go right, 
+        the 's' letter to go down and the 'a' letter to go left. Be careful though, for there are pits within the 
+        maze that can injure you and if you take to much damage, you will DIE!!! If that happens, the game ends and 
+        you'll start over with a new adventurer and a new maze. To help you survive, we have placed some potions 
+        within the maze to either restore your HP (health points) by pressing the 'h' button. Or, to help you see 
+        deeper within the maze, press the 'j' button. If You wish to check your adventurers stats, press the 'q' button.
+        Once you've found all four pillars of OO, find the room with the 0 mark in the maze and enter it to complete the
+        maze. Important to note, if the edges have holes, you can walk through them and it'll warp you to the other 
+        side of the maze!!!""")
+        button.pack()
 
     def __dungeon_key_images(self):
         """

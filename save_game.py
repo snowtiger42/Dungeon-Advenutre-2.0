@@ -1,18 +1,14 @@
-import shelve
+import pickle
+from dungeon_adventure import DungeonAdventure
 
 
 class SaveGame:
-    def __init__(self):
-        pass
-
     def save_slot_1(self):
-        save_slot_1 = shelve.open('save_slot_1')
-        save_slot_1.close()
+        dungeon_adv = DungeonAdventure()
+        pickle_save = open('save_slot_1.pkl', 'wb')
+        pickle.dump(dungeon_adv, pickle_save)
+        pickle_save.close()
 
-    def save_slot_2(self):
-        save_slot_2 = shelve.open('save_slot_2')
-        save_slot_2.close()
 
-    def save_slot_3(self):
-        save_slot_3 = shelve.open('save_slot_3')
-        save_slot_3.close()
+# save = SaveGame()
+# save.save_slot_1()

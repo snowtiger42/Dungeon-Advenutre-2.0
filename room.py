@@ -1,8 +1,30 @@
 import random
 
+from monster import Monster
+from phonenix import Phoenix
+from emu import Emu
+from raven import Raven
+from mock_game import MockGame as Game
+
 
 class Room:
     def __init__(self, room_id, location):
+        # self.__game = game
+        self.__phoenix = Phoenix
+        self.__phoenix = False
+        if random.random() < 0.1:
+            self.__phoenix = True
+
+        self.__emu = Emu
+        self.__emu = False
+        self.__raven = Raven
+        self.__raven = False
+        if random.random() < 0.1:
+            self.__emu = True
+        elif random.random() < 0.1:
+            self.__raven = True
+
+
         self.__health_p = False
         if random.random() < 0.1:
             self.__health_p = True
@@ -54,13 +76,17 @@ class Room:
         elif self.__exit:
             item = "O"
         elif self.__health_p and self.__vision_p:
-            item = "M"
+            item = "B"
         elif self.__pit:
             item = "X"
         elif self.__health_p:
             item = "H"
         elif self.__vision_p:
             item = "V"
+        elif self.__emu:
+            item = "!"
+        elif self.__raven:
+            item = "?"
         else:
             item = " "
 
@@ -145,27 +171,43 @@ class Room:
         """
         self.__doors[dir] = False
 
-    def enter(self, adv):
+    def enter(self, war):
         """
         Called when the adventurer enters a room.  Calls the appropriate
         methods based on the room's contents, then sets the room as containing
         the player.
         """
+        self.__game = Game
+
         if self.__exit:
-            adv.exit()
+            # if self.__pillar >= len(4):
+            """put self.__phoenix"""
+            war.exit()
             self.__has_player = True
             return
         if self.__pillar:
-            adv.earn_pillar(self.__pillar)
+            """put self.__sphinx.quiz() here"""
+            war.earn_pillar(self.__pillar)
             self.__pillar = False
         if self.__vision_p:
-            adv.add_vision_potion()
+            war.add_vision_potion()
             self.__vision_p = False
         if self.__health_p:
-            adv.add_health_potion()
+            war.add_health_potion()
             self.__health_p = False
         if self.__pit:
-            adv.take_damage(self.__pit, "a pit trap")
+            war.take_damage(self.__pit, "a pit trap")
+        if self.__emu:
+
+            # war.combat(war, Emu)
+            # war.fight(war, Emu)
+            self.__game.announce(Game(), f"The Hero {war} has found the {self.__emu}")
+
+            # print(f"The Hero {war} has found the {self.__emu.__str__()}")
+
+        if self.__raven:
+            self.__game.announce(Game(), f"The Hero {war} has found the  RAVEN {self.__raven}")
+
 
         self.__has_player = True
 

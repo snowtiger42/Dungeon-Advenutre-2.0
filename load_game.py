@@ -1,18 +1,9 @@
-import shelve
+import pickle
+from save_game import SaveGame
 
 
 class LoadGame:
-    def __init__(self):
-        pass
-
-    def load_slot_1(self):
-        load_slot_1 = shelve.open('save_slot_1')
-        load_slot_1.close()
-
-    def load_slot_2(self):
-        load_slot_2 = shelve.open('save_slot_2')
-        load_slot_2.close()
-
-    def load_slot_3(self):
-        load_slot_3 = shelve.open('save_slot_3')
-        load_slot_3.close()
+    def load_save_slot_1(self):
+        pickle_load = open('save_slot_1.pkl', 'rb')
+        pickle_load = pickle.load(pickle_load)
+        pickle_load.close()
