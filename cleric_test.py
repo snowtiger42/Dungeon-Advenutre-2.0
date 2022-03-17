@@ -86,7 +86,7 @@ class Cleric_Test(unittest.TestCase):
 
     def test_Chance_To_Dodge(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_dodge(random.uniform(.20, .30), source="unit tests"), None)
+        self.assertEqual(my_adventurer.chance_to_dodge(random.uniform(.30, .40), source="unit tests"), None)
 
     def test_Attack_Speed(self):
         my_adventurer = Cleric("Jack", Game())
