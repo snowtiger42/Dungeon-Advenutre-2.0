@@ -85,15 +85,14 @@ class Battleground:
         # st_menu_button3.config(command=lambda: self.test_damage("monster"))
 
     def combat_commands(self, hero, monster, choice):
-        # if hero.get_current_hp() <= 0 or monster.get_current_hp() <= 0:
-        #     self.root.destroy()
-
         if choice == "Fight":
             hero.fight(hero, monster)
             # hero.fight(hero, monster)
 
             # monster.fight(monster, hero)
             if hero.get_current_hp() <= 0 or monster.get_current_hp() <= 0:
+                if hero.get_current_hp() <= 0:
+                    hero.is_dead()
                 self.root.destroy()
 
         elif choice == "Special Move":
@@ -106,14 +105,16 @@ class Battleground:
 
             # monster.fight(monster, hero)
             if hero.get_current_hp() <= 0 or monster.get_current_hp() <= 0:
+                if hero.get_current_hp() <= 0:
+                    hero.is_dead()
                 self.root.destroy()
 
         elif choice == "Potion":
             hero.use_health_potion()
             hero.fight(hero, monster)
-
-            # monster.fight(monster, hero)
             if hero.get_current_hp() <= 0 or monster.get_current_hp() <= 0:
+                if hero.get_current_hp() <= 0:
+                    hero.is_dead()
                 self.root.destroy()
 
 
