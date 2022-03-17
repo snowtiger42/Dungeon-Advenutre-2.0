@@ -1,8 +1,8 @@
 import random
-import self as self
-from dungeonCharacter import DungeonCharacter
-from mock_game import MockGame as Game
+# from mock_game import MockGame as Game
 from hero import Hero
+from mockannouncement import MockAnnouncement as Announce
+
 
 
 class Warrior(Hero):
@@ -10,40 +10,61 @@ class Warrior(Hero):
     A class the handles information for the Warrior
     """
 
-    def __init__(self, name):
-        super().__init__(name, 100, 200, range(100, 200), range(100, 200), 30, 80, range(30, 80), 4, .60,
-                         .75, random.uniform(.60, .75), .3, .5, random.uniform(.3, .5), .30, .5,
-                         random.uniform(.3, .5), 0, 0)
-        self.__name = name
-
-    def get_name(self):
-        return self.__name
-
-    def set_name(self, name):
-        self.__name = name
-
-    def use_health_potion(self):
-        super().use_health_potion()
-
-    # def use_health_potion(self):
-    #     Hero.use_health_potion(self)
-
-    def special_move(self):
-        hitChance = DungeonCharacter.get_chance_to_hit(self) // 2
-        damage = (DungeonCharacter.get_attack_damage_range(self)) * 3
-
-        if hitChance >= 1:
-           hp = DungeonCharacter.get_current_hp(self)
-           hp -= damage
+    def __init__(self, name, game):
+        super().__init__(name, game, 200, 300, 30, 90, 4, .70, .80, .3, .4, .30, .5)
+        self.__game = game
+        self.announce = Announce()
 
 
-    # def __str__(self):
-    #     prefix = super().__str__()
-    #     p = format(prefix)
-    #     return print(p)
+    def special_move(self, defender):
+        if self.get_current_hp() <= 0:
+            self.is_dead()
 
-adventurer = Warrior("Bill")
-print(adventurer)
+        reduced_chance_to_hit = (self.get_chance_to_hit()) / 2
+        hitChance = random.uniform(.1, 1)
+        damage = (self.get_attack_damage_range()) * 3
+
+        if reduced_chance_to_hit >= hitChance:
+            new_hp = defender.get_current_hp()
+            result = new_hp - damage
+
+            if result >= defender.get_generated_hp():
+                defender.set_current_hp(0)
+                self.announce.announce(f"{self.get_name()} used the Crushing Blow ability! It deals {damage} damage, "
+                                       f"bringing {defender.get_name()} HP to {defender.get_current_hp()}.\n")
+                self.announce.announce_monster_stats(f"{defender}")
+            else:
+                defender.set_current_hp(result)
+                self.announce.announce(f"{self.get_name()} used the Crushing Blow ability! It deals {damage} damage, "
+                                     f"bringing {defender.get_name()} HP to {defender.get_current_hp()}.\n")
+                self.announce.announce_monster_stats(f"{defender}")
+            return True
+        else:
+            self.announce.announce(f"{self.get_name()} used the Crushing Blow ability and Missed! It deals {0} damage, "
+                                 f"bringing {defender.get_name()}  HP to {defender.get_current_hp()}.\n")
+            return False
+
+
+# adventurer = Warrior("Pranav", Game())
+# me = Warrior("Kevin", Game())
+# print(adventurer)
+# print(me)
+#
+# me.fight(me, adventurer)
+# me.special_move()
+#
+# print(adventurer)
+# print(me)
+
+# print("my name is ", adventurer.get_name())
+# print(me)
+#
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# me.special_move()
+# print(me)
 
 
 # print("\n------------------------print adventurer status ('empty', try using either potion)-------------------------")
@@ -59,7 +80,7 @@ print(adventurer)
 # print("\n------------------------print adventurer status (take damage 1st)-------------------------")
 # adventurer.take_damage(1, "angry gnat")
 # print(adventurer)
-
+#
 # print("\n------------------------print adventurer status (take 1st health potion)-------------------------")
 # adventurer.use_health_potion()
 # print(adventurer)
@@ -96,11 +117,6 @@ print(adventurer)
 #
 # print("\n------------------------print adventurer status (TIME TO DIE!!!)-------------------------")
 # print(adventurer)
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
-# adventurer.take_damage(20, "legendary pit")
 # adventurer.take_damage(2000, "extra legendary pit")
 # print(adventurer)
 #
