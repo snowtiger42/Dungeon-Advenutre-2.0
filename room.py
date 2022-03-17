@@ -1,15 +1,31 @@
 import random
-from base import Base
+
+# from monster import Monster
+from phoenix import Phoenix
+from emu import Emu
+from raven import Raven
+from sphinx import Sphinx
+
+from mock_game import MockGame as Game
+from battleground import Battleground
+from quiz import Quiz
 
 
-# add monster to room
-class Room():  # Base
-    # __tablename__ = 'rooms'
-    # id = Column(Integer, primary_key=True)
-    # name = Column(String)
-    # monsters = relationship("Monster")
-
+class Room:
     def __init__(self, room_id, location):
+        self.__diff = 1
+        # self.__game = game
+        # self.__monster = None
+        self.__phoenix = Phoenix
+        # self.__phoenix = False
+        # if random.random() < 0.1:
+        #     self.__phoenix = True
+
+        self.__emu = Emu
+        self.__emu = False
+        self.__raven = Raven
+        self.__raven = False
+
         self.__health_p = False
         if random.random() < 0.1:
             self.__health_p = True
@@ -20,9 +36,6 @@ class Room():  # Base
         if random.random() < 0.1:
             self.__pit = random.randrange(1, 20)
         self.__exit = False
-        self.__monster = False
-        if random.random() < 0.1 and self.__pit == False:
-            self.__monster = True
         self.__doors = {
             "n": None,
             "w": None,
@@ -33,6 +46,33 @@ class Room():  # Base
         self.__pillar = False
         self.__room_id = room_id
         self.__location = location
+        self.__quiz_type = None
+        self.__monster = self.instantiate_monster()
+
+    def get_monster_info(self):
+        return self.__monster
+
+    # ok one in each room but not with a pit wow good idea
+    # I'll ask to remove pits
+
+    def instantiate_monster(self):
+        if self.__pit:
+            return None
+        if self.__pillar:
+            return Sphinx(self.__diff, 'Sphinx', Game())
+        if self.__exit:
+            return Phoenix(self.__diff, 'Phoenix', Game())
+        if random.random() < 0.06:
+            self.__emu = True
+            return Emu(self.__diff, 'Emu', Game())
+        elif random.random() < 0.06:
+            self.__raven = True
+            return Raven(self.__diff, 'Raven', Game())
+
+        # emu = Emu(self.__diff, 'Emu', Game())
+        # raven = Raven(self.__diff, 'Raven', Game())
+        # sphinx = Sphinx(self.__diff, 'Sphinx', Game())
+        # phoenix = Phoenix(self.__diff, 'Phoenix', Game())
 
     def get_id(self):
         """
@@ -64,13 +104,17 @@ class Room():  # Base
         elif self.__exit:
             item = "O"
         elif self.__health_p and self.__vision_p:
-            item = "M"
+            item = "B"
         elif self.__pit:
             item = "X"
         elif self.__health_p:
             item = "H"
         elif self.__vision_p:
             item = "V"
+        elif self.__emu:
+            item = "!"
+        elif self.__raven:
+            item = "?"
         else:
             item = " "
 
@@ -122,11 +166,23 @@ class Room():  # Base
         if pillar in pillars:
             self.__pillar = pillar
 
+        if self.__pillar == "A":
+            self.__quiz_type = 'Abstraction'
+        elif self.__pillar == "E":
+            self.__quiz_type = 'Encapsulation'
+        elif self.__pillar == "I":
+            self.__quiz_type = 'Inheritance'
+        elif self.__pillar == "P":
+            self.__quiz_type = 'Polymorphism'
+
     def get_pillar(self):
         """
         Returns the pillar, if any, stored in the room.  False otherwise.
         """
         return self.__pillar
+
+    def quiz_type(self):
+        return self.__quiz_type
 
     def clear_room(self):
         """
@@ -135,6 +191,9 @@ class Room():  # Base
         self.__health_p = False
         self.__pit = False
         self.__vision_p = False
+        self.__raven = False
+        self.__emu = False
+
 
     def set_as_exit(self):
         """
@@ -155,26 +214,46 @@ class Room():  # Base
         """
         self.__doors[dir] = False
 
-    def enter(self, adv):
+    def enter(self, war):
         """
         Called when the adventurer enters a room.  Calls the appropriate
         methods based on the room's contents, then sets the room as containing
         the player.
         """
+        self.__game = Game
+
         if self.__exit:
-            adv.exit()
+            # if self.__pillar >= len(4):
+            """put self.__phoenix"""
+            war.exit()
             self.__has_player = True
             return
         if self.__pillar:
-            adv.earn_pillar(self.__pillar)
+            war.earn_pillar(self.__pillar)
             self.__pillar = False
+            quiz = Quiz()
+            self.__monster = Sphinx(self.__diff, "Sphinx", Game())
+            quiz.start_quiz(self.__quiz_type, war, self.__monster)
         if self.__vision_p:
-            adv.add_vision_potion()
+            war.add_vision_potion()
             self.__vision_p = False
         if self.__health_p:
-            adv.add_health_potion()
+            war.add_health_potion()
             self.__health_p = False
         if self.__pit:
-            adv.take_damage(self.__pit, "a pit trap")
+            war.take_damage(self.__pit, "a pit trap")
+        if self.__emu:
+            self.__game.announce(Game(), f"The Hero {war} has found the EMU")
+            self.__emu = False
+            self.__monster = Emu(self.__diff, "Emu", Game())
+            battleground = Battleground()
+            battleground.combat(war, self.__monster)
+        if self.__raven:
+            self.__game.announce(Game(), f"The Hero {war} has found the RAVEN")
+            self.__raven = False
+            self.__monster = Raven(self.__diff, "Raven", Game())
+            battleground = Battleground()
+            battleground.combat(war, self.__monster)
 
         self.__has_player = True
+
