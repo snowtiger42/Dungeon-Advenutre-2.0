@@ -24,7 +24,7 @@ class Room:
         elif random.random() < 0.1:
             self.__raven = True
 
-
+# ok :) ok
         self.__health_p = False
         if random.random() < 0.1:
             self.__health_p = True
@@ -45,6 +45,25 @@ class Room:
         self.__pillar = False
         self.__room_id = room_id
         self.__location = location
+        
+    def get_monster_info(self):
+        pass
+# ok one in each room but not with a pit wow good idea
+    # I'll ask to remove pits
+
+
+    def instantiate_monster(self):
+        emu = Emu(self.__diff, 'Emu', Game())
+        raven = Raven(self.__diff, 'Raven', Game())
+        sphinx = Sphinx(self.__diff, 'Sphinx', Game())
+        phoenix = Pheonix(self.__diff, 'Phoenix', Game())
+
+    # if pillar_room:
+    #     choice = "Sphinx"  # Hardcoded, not my favorite, but works!
+    # else:
+    #     choice = random.choice(("Sphinx"))
+    # monster_dict = self.__qh.query(choice) is this query bringing in the stats? I need stats when monsters are in combat
+    #
 
     def get_id(self):
         """

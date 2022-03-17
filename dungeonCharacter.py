@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 # from abc import abstractmethod
-from mock_game import MockGame as Game
+
 # import sys
 import random
 # from practice_gui import Practice_gui

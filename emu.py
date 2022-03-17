@@ -1,8 +1,9 @@
 from abc import ABCMeta, abstractmethod
 import random
-from mock_game import MockGame as Game
+# from mock_game import MockGame as Game
 from dungeonCharacter import DungeonCharacter
 from monster import Monster
+import sqliteselect
 
 """
 self, name, game, min_hp, max_hp, attack_min, attack_max, \
@@ -11,9 +12,23 @@ self, name, game, min_hp, max_hp, attack_min, attack_max, \
                  regenerate_amount
 """
 
-
+#
 class Emu(Monster):
-    def __init__(self, diff, name, game):
+    def __init__(self, diff, name = 'emu', game = None):# use db query
+        database = r"monsters.db"
+
+        # create a database connection
+        conn = sqliteselect.create_connection(database)
+        with conn:
+            print("1. Query task by priority:")
+            # select_monster(conn, 'emu')
+            monster_data = sqliteselect.select_monster(conn, 'emu')
+        print(monster_data[1]) # access each number individually
+# next need to make monsters exist in the room
+        # this will use database to make the monsters
+        # do this for each monsters
+        # put in monster data 1, monster data 2, etc. don't do a loop - no time
+                                        # copy and paste monster data 1 for 250, etc
         super().__init__(name, game, 250, 333, 40, 60, 1, .40, .60, .10, .25, .50, .60, 20)
         self.__game = game
         self.__diff = diff
@@ -37,8 +52,8 @@ class Emu(Monster):
     #     super().__str__()
 
 
-# if __name__ == "__main__":
-#     test = Emu(10)
+if __name__ == "__main__":
+    test = Emu(10)
 #     test.take_damage(500, test)
 #     if test.is_dead():
 #         print(test.get_current_hp())

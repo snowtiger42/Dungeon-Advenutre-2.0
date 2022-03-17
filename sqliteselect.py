@@ -34,21 +34,22 @@ def select_all_tasks(conn):
         print(row)
 
 
-def select_task_by_priority(conn, priority):
+def select_monster(conn, monster):
     """
     Query tasks by priority
     :param conn: the Connection object
-    :param priority:
+    :param monster: String emu, sphinx, phoenix, raven
     :return:
     """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM monsters WHERE monsters=?", ('emu',))
-
+    cur.execute("""SELECT * FROM monsters WHERE monsters=?""", (monster,))
+# I think so
+    #
     rows = cur.fetchall()
 # create a function to query for each monster
     # pass in a specific variable and then query the monster name is a better version
     for row in rows:
-        print(row)
+        return row
 
 
 def main():

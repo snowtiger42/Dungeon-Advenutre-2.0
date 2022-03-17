@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 from dungeonCharacter import DungeonCharacter
-from mock_game import MockGame as Game
+# from mock_game import MockGame as Game
 from healAble import HealAble
 import random
 

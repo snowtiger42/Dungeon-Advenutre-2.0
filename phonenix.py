@@ -1,14 +1,25 @@
 from abc import ABCMeta, abstractmethod
 import random
 from monster import Monster
+import sqliteselect
 
 
 class Phoenix(Monster):
-    def __init__(self, diff, name, game):
+    def __init__(self, diff, name='phoenix', game=None):  # use db query
+        database = r"monsters.db"
+
+        # create a database connection
+        conn = sqliteselect.create_connection(database)
+        with conn:
+            print("1. Query task by priority:")
+            # select_monster(conn, 'phoenix')
+            monster_data = sqliteselect.select_monster(conn, 'phoenix')
+        print(monster_data[1])
+
         super().__init__(name, game, 250, 333, 33, 44, 3, .60, .75, .3, .5,
                          .30, .5, 20)
         self.__diff = diff
-        self.__name = name
+        # self.__name = name
 
     def get_diff(self):
         self.__diff.get()
@@ -21,6 +32,8 @@ class Phoenix(Monster):
         self.__name = "Phoenix"
 
 
+if __name__ == "__main__":
+    test = Phoenix(10)
 # p = Phoenix(1, "Phoenix")
 # print(p)
 #
