@@ -2,11 +2,11 @@ import random
 from typing import Optional, List
 
 # from combatMode import CombatMode
-from practice_gui import Practice_gui
-from phonenix import Phoenix
+# from battleground import Battleground
+# from phonenix import Phoenix
 from warrior import Warrior
-from thief import Thief
-from cleric import Cleric
+# from thief import Thief
+# from cleric import Cleric
 # from adventurer import Adventurer
 from room import Room
 from mock_game import MockGame as Game

@@ -1,12 +1,14 @@
 from abc import ABCMeta, abstractmethod
 # from abc import abstractmethod
+from mock_game import MockGame as Game
 
 # import sys
 import random
-# from practice_gui import Practice_gui
 
-# from combatMode import CombatMode
-import numpy as np
+# from practice_gui import Practice_gui
+# from battleground import Battleground
+from mockannouncement import MockAnnouncement as Announce
+
 
 
 class DungeonCharacter(object, metaclass=ABCMeta):
@@ -19,6 +21,9 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         self.__game = game
         self.__min_hp = min_hp
         self.__max_hp = max_hp
+
+        # self.battleground = Battleground()
+        self.announce = Announce()
 
         self.__generated_hp = random.randrange(self.__min_hp, self.__max_hp)
         self.__current_hp = self.__generated_hp
@@ -144,7 +149,7 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         """
         Reduces HP by the indicated amount and makes an announcement.
         """
-        # damage = self.__attack_damage_range
+        announcement = self.announce
         self.__current_hp = self.get_current_hp() - damage
 
         if self.__current_hp <= 0:
@@ -154,13 +159,16 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         # print(f"Oh no! {self.__name} took {damage} dmg from {source}!\nThey are now at {self.__current_hp} hp!")
         self.__game.announce(f"{self.__name} took {damage} dmg from {source}!\n{self.__name} are now at "
                              f"{self.get_current_hp()} hp!")
-        self.__game.announce_battle_log(f"{self.__name} took {damage} dmg from {source}!\n{self.__name} are now at "
+
+        announcement.announce(f"{self.__name} took {damage} dmg from {source}!\n{self.__name} are now at "
                              f"{self.get_current_hp()} hp!")
 
         # determines whether an attack is a hit or a miss. Returns true if attack is successful.
         # Generates random number. Compares random number to attack chance.
 
     def fight(self, attacker, defender):
+        announcement = self.announce
+
         attacker_damage = random.randint(attacker.get_attack_min(), attacker.get_attack_max())
         defender_new_hp = defender.get_current_hp()
 
@@ -168,35 +176,35 @@ class DungeonCharacter(object, metaclass=ABCMeta):
         attacker_new_hp = attacker.get_current_hp()
 
         dodge_chance = random.uniform(.1, 1)
-        # character will attack another character
         hit_chance = random.uniform(.1, 1)  # generates a random % chance of a successful attack by this character
         if attacker.get_attack_speed() >= defender.get_attack_speed():
             """Conditions placed here depending on button press"""
-            # self.__game.announce
 
             if attacker.get_chance_to_hit() >= hit_chance:
                 if defender.get_chance_to_dodge() < dodge_chance:
-                    defender.take_damage(attacker_damage, attacker.get_name())  # make set to take_damage
-                    # self.__game.announce_monster_stats(f"{defender}")
+                    defender.take_damage(attacker_damage, attacker.get_name())
+                    announcement.announce_monster_stats(f"{defender}") #make a reference to battleground
                 else:
-                    self.__game.announce_battle_log(f"{attacker.get_name()} has missed resulting in {0} damage to {defender.get_name()} hp."
+                    announcement.announce(f"{attacker.get_name()} has missed resulting in {0} damage to {defender.get_name()} hp."
                           f" {defender.get_name()} has {defender.get_current_hp()} hp.\n")
             else:
-                self.__game.announce_battle_log(f"{attacker.get_name()} has missed resulting in {0} damage to {defender.get_name()} hp."
+                announcement.announce(f"{attacker.get_name()} has missed resulting in {0} damage to {defender.get_name()} hp."
                                      f" {defender.get_name()} has {defender.get_current_hp()} hp.\n")
 
             if defender.get_current_hp() > 0:
                 if defender.get_chance_to_hit() >= hit_chance:
                     if attacker.get_chance_to_dodge() < dodge_chance:
                         attacker.take_damage(defender_damage, defender.get_name())
-                        # self.__game.announce_hero_stats(f"{attacker}")
+                        announcement.announce_hero_stats(f"{attacker}")
 
                     else:
-                        self.__game.announce_battle_log(f"{defender.get_name()} has missed resulting in {0} damage to {attacker.get_name()} hp."
+                        announcement.announce(f"{defender.get_name()} has missed resulting in {0} damage to {attacker.get_name()} hp."
                               f" {attacker.get_name()} has {attacker.get_current_hp()} hp.\n")
                 else:
-                    self.__game.announce_battle_log(f"{defender.get_name()} has missed resulting in {0} damage to {attacker.get_name()} hp."
+                    announcement.announce(f"{defender.get_name()} has missed resulting in {0} damage to {attacker.get_name()} hp."
                                          f" {attacker.get_name()} has {attacker.get_current_hp()} hp.\n")
+
+
 
     # """Move most of this to DA_class and create GUI, The GUI must have buttons fight, use_potion, special move. the buttons will have conditions where if a button is pressed that action will
     # take place; elif another button is pressed, then that action happens. Then the monster will recipricate by striking"""

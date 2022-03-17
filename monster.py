@@ -1,18 +1,21 @@
-from abc import ABCMeta, abstractmethod
+# from abc import ABCMeta, abstractmethod
 from dungeonCharacter import DungeonCharacter
 # from mock_game import MockGame as Game
-from healAble import HealAble
+# from healAble import HealAble
 import random
+from mockannouncement import MockAnnouncement as Announce
+
 
 
 class Monster(DungeonCharacter):
-    def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min, chance_to_hit_max,
-                 chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
+    def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
+                 chance_to_hit_max, chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
                  chance_to_regenerate_max, regenerate_amount):
-        # if self.__class__ == Monster:
-        #     raise Exception('I am abstract!')
         super().__init__(name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
                          chance_to_hit_max, chance_to_hit, chance_to_dodge_min)
+
+        self.__game = game
+        self.announce = Announce()
 
         self.__chance_to_regenerate_min = chance_to_regenerate_min
         self.__chance_to_regenerate_max = chance_to_regenerate_max
@@ -32,46 +35,36 @@ class Monster(DungeonCharacter):
     def set_chance_to_regenerate_max(self, regenerate_max):
         self.__chance_to_regenerate_max = regenerate_max
 
+    def regen_chance_compare(self):
+        regen_chance = random.uniform(.1, 1)
+        return regen_chance
+
     def get_regenerate_amount(self):
         return self.__regenerate_amount
 
     def set_regenerate_amount(self, regen_amount):
         self.__regenerate_amount = regen_amount
 
-    def regen_chance_compare(self):
-        regen_chance = random.uniform(.1, 1)
-        return regen_chance
-
     def regenerate(self):
-        heal = self.__regenerate_amount
-        # heal = HealAble().heal()
+        announcement = self.announce
+
         current_hp = self.get_current_hp()
-        new_hp = current_hp + heal
+        new_hp = current_hp + self.__regenerate_amount
 
         if self.get_current_hp() <= 0:
             self.is_dead()
 
-        if self.__chance_to_regenerate >= self.regen_chance_compare():
-            self.set_current_hp(new_hp)
-
             if new_hp >= self.get_generated_hp():
                 self.set_current_hp(self.get_generated_hp())
+                announcement.announce(f"{self.get_name()} Managed to regenerate! However, {self.get_name()} has max HP "
+                                      f"so it only heals {0} HP, bringing it to {self.get_current_hp()}.\n")
             else:
                 self.set_current_hp(new_hp)
-            self.__game.announce(f"Managed to regenerate! It heals {heal} HP, bringing it to {self.get_current_hp()}.")
-            # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
+                announcement.announce(f"{self.get_name()} Managed to regenerate! It heals {self.__regenerate_amount} HP,"
+                                     f" bringing it to {new_hp}.\n")
+                # self.__game.announce_monster_stats(f"{defender}")
+                # f" bringing it to {new_hp}.")
             return True
-
-        else:
-            self.__game.announce(f"Failed to regenerate! It heals {0} HP, bringing it to {self.get_current_hp()}.")
-            # self.__game.announce(f"Used a health potion! It heals {heal} HP, bringing you to {self.__current_hp}.")
-            return False
-
-    def combat(self, attacker, defender):
-        super().combat(attacker, defender)
-        if defender.get_current_hp > 0:
-            defender.regenerate()
-            # self.__game.announce(f"")
 
     def __str__(self):
         prefix = super().__str__()
@@ -110,10 +103,32 @@ class Monster(DungeonCharacter):
 
         return output_str
 
+    def take_damage(self, damage, source):
+        announcement = self.announce
+        if self.get_current_hp() > 0:
+            self.is_dead()
 
-# c = Monster("Monster", Game(), 200, 300, 20, 40, 3, .50, .60, .10, .20,
-#             .1, .2, 20)
-# print(c)
+        if self.__chance_to_regenerate >= self.regen_chance_compare():
+            self.regenerate()
+            announcement.announce(f"\nRegen Sucessful:\n{self.get_name()} Managed to regenerate! It heals {self.__regenerate_amount} HP, "
+                                 f"bringing {self.get_name()} to {self.get_current_hp()}.\n")
+            # self.__game.announce_monster_stats(f"{defender}")
+
+            # super().take_damage(damage, source)
+            # self.__game.announce_battle_log("\n")
+        else:
+            announcement.announce(f"\nRegen Failed:\n{self.get_name()} failed to regenerate! It heals {0} HP, bringing {self.get_name()} "
+                                 f"to {self.get_current_hp()}.\n")
+        super().take_damage(damage, source)
+
+
+
+# jack = Monster("Jack", Game(), 200, 300, 40, 80, 4, .70, .85, .60, .80, .60, .80, 60)
+# jill = Monster("Jill", Game(), 100, 200, 30, 80, 3, .30, .65, .20, .30, .2, .3, 20)
+# jack.fight(jack, jill)
+
+
+# print(c)f
 #
 # c.take_damage(100, "Hero")
 #

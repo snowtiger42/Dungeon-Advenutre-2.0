@@ -32,7 +32,10 @@ def create_project(conn, monsters):
               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?) '''
     cur = conn.cursor()
     # cur.execute(sql, monsters)
-    cur.execute("INSERT INTO monsters VALUES ('sphinx', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)")
+    cur.execute("INSERT INTO monsters VALUES ('emu', 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20)")
+    cur.execute("INSERT INTO monsters VALUES ('phoenix', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)")
+    cur.execute("INSERT INTO monsters VALUES ('raven', 100, 120, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)")
+    # cur.execute("INSERT INTO monsters VALUES ('sphinx', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)")
     conn.commit()
     return cur.lastrowid
 
@@ -44,8 +47,8 @@ def main():
     conn = create_connection(database)
     with conn:
         # create a new project
-        monsters = (('phoenix', 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20),
-                    ('emu', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
+        monsters = (('emu', 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20),
+                    ('phoenix', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
                     ('raven', 100, 120, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
                     ('sphinx', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20))
         project_id = create_project(conn, monsters)

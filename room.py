@@ -1,30 +1,31 @@
 import random
 
-from monster import Monster
-from phonenix import Phoenix
+# from monster import Monster
+from phoenix import Phoenix
 from emu import Emu
 from raven import Raven
+from sphinx import Sphinx
+
 from mock_game import MockGame as Game
+from battleground import Battleground
+from quiz import Quiz
 
 
 class Room:
     def __init__(self, room_id, location):
+        self.__diff = 1
         # self.__game = game
+        # self.__monster = None
         self.__phoenix = Phoenix
-        self.__phoenix = False
-        if random.random() < 0.1:
-            self.__phoenix = True
+        # self.__phoenix = False
+        # if random.random() < 0.1:
+        #     self.__phoenix = True
 
         self.__emu = Emu
         self.__emu = False
         self.__raven = Raven
         self.__raven = False
-        if random.random() < 0.1:
-            self.__emu = True
-        elif random.random() < 0.1:
-            self.__raven = True
 
-# ok :) ok
         self.__health_p = False
         if random.random() < 0.1:
             self.__health_p = True
@@ -45,25 +46,33 @@ class Room:
         self.__pillar = False
         self.__room_id = room_id
         self.__location = location
-        
+        self.__quiz_type = None
+        self.__monster = self.instantiate_monster()
+
     def get_monster_info(self):
-        pass
-# ok one in each room but not with a pit wow good idea
+        return self.__monster
+
+    # ok one in each room but not with a pit wow good idea
     # I'll ask to remove pits
 
-
     def instantiate_monster(self):
-        emu = Emu(self.__diff, 'Emu', Game())
-        raven = Raven(self.__diff, 'Raven', Game())
-        sphinx = Sphinx(self.__diff, 'Sphinx', Game())
-        phoenix = Pheonix(self.__diff, 'Phoenix', Game())
+        if self.__pit:
+            return None
+        if self.__pillar:
+            return Sphinx(self.__diff, 'Sphinx', Game())
+        if self.__exit:
+            return Phoenix(self.__diff, 'Phoenix', Game())
+        if random.random() < 0.06:
+            self.__emu = True
+            return Emu(self.__diff, 'Emu', Game())
+        elif random.random() < 0.06:
+            self.__raven = True
+            return Raven(self.__diff, 'Raven', Game())
 
-    # if pillar_room:
-    #     choice = "Sphinx"  # Hardcoded, not my favorite, but works!
-    # else:
-    #     choice = random.choice(("Sphinx"))
-    # monster_dict = self.__qh.query(choice) is this query bringing in the stats? I need stats when monsters are in combat
-    #
+        # emu = Emu(self.__diff, 'Emu', Game())
+        # raven = Raven(self.__diff, 'Raven', Game())
+        # sphinx = Sphinx(self.__diff, 'Sphinx', Game())
+        # phoenix = Phoenix(self.__diff, 'Phoenix', Game())
 
     def get_id(self):
         """
@@ -157,11 +166,23 @@ class Room:
         if pillar in pillars:
             self.__pillar = pillar
 
+        if self.__pillar == "A":
+            self.__quiz_type = 'Abstraction'
+        elif self.__pillar == "E":
+            self.__quiz_type = 'Encapsulation'
+        elif self.__pillar == "I":
+            self.__quiz_type = 'Inheritance'
+        elif self.__pillar == "P":
+            self.__quiz_type = 'Polymorphism'
+
     def get_pillar(self):
         """
         Returns the pillar, if any, stored in the room.  False otherwise.
         """
         return self.__pillar
+
+    def quiz_type(self):
+        return self.__quiz_type
 
     def clear_room(self):
         """
@@ -170,6 +191,9 @@ class Room:
         self.__health_p = False
         self.__pit = False
         self.__vision_p = False
+        self.__raven = False
+        self.__emu = False
+
 
     def set_as_exit(self):
         """
@@ -205,19 +229,11 @@ class Room:
             self.__has_player = True
             return
         if self.__pillar:
-            """put self.__sphinx.quiz() here"""
             war.earn_pillar(self.__pillar)
-            # quiz = Quiz()
-            # if self.__pillar == "A":
-            #     quiz.startQuiz("A")
-            # elif self.__pillar == "E":
-            #     quiz.startQuiz("E")
-            # elif self.__pillar == "I":
-            #     quiz.startQuiz("I")
-            # elif self.__pillar == "P":
-            #     quiz.startQuiz("P")
-
             self.__pillar = False
+            quiz = Quiz()
+            self.__monster = Sphinx(self.__diff, "Sphinx", Game())
+            quiz.start_quiz(self.__quiz_type, war, self.__monster)
         if self.__vision_p:
             war.add_vision_potion()
             self.__vision_p = False
@@ -227,16 +243,17 @@ class Room:
         if self.__pit:
             war.take_damage(self.__pit, "a pit trap")
         if self.__emu:
-
-            # war.combat(war, Emu)
-            # war.fight(war, Emu)
-            self.__game.announce(Game(), f"The Hero {war} has found the {self.__emu}")
-
-            # print(f"The Hero {war} has found the {self.__emu.__str__()}")
-
+            self.__game.announce(Game(), f"The Hero {war} has found the EMU")
+            self.__emu = False
+            self.__monster = Emu(self.__diff, "Emu", Game())
+            battleground = Battleground()
+            battleground.combat(war, self.__monster)
         if self.__raven:
-            self.__game.announce(Game(), f"The Hero {war} has found the  RAVEN {self.__raven}")
-
+            self.__game.announce(Game(), f"The Hero {war} has found the RAVEN")
+            self.__raven = False
+            self.__monster = Raven(self.__diff, "Raven", Game())
+            battleground = Battleground()
+            battleground.combat(war, self.__monster)
 
         self.__has_player = True
 

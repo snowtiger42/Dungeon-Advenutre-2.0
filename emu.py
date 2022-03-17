@@ -1,6 +1,5 @@
 from abc import ABCMeta, abstractmethod
 import random
-# from mock_game import MockGame as Game
 from dungeonCharacter import DungeonCharacter
 from monster import Monster
 import sqliteselect
@@ -12,9 +11,9 @@ self, name, game, min_hp, max_hp, attack_min, attack_max, \
                  regenerate_amount
 """
 
-#
+
 class Emu(Monster):
-    def __init__(self, diff, name = 'emu', game = None):# use db query
+    def __init__(self, diff, name=None, game=None):
         database = r"monsters.db"
 
         # create a database connection
@@ -23,16 +22,13 @@ class Emu(Monster):
             print("1. Query task by priority:")
             # select_monster(conn, 'emu')
             monster_data = sqliteselect.select_monster(conn, 'emu')
-        print(monster_data[1]) # access each number individually
-# next need to make monsters exist in the room
-        # this will use database to make the monsters
-        # do this for each monsters
-        # put in monster data 1, monster data 2, etc. don't do a loop - no time
-                                        # copy and paste monster data 1 for 250, etc
-        super().__init__(name, game, 250, 333, 40, 60, 1, .40, .60, .10, .25, .50, .60, 20)
-        self.__game = game
+        print(monster_data[0]) # access each number individually
+
+        super().__init__(monster_data[0], game, monster_data[1], monster_data[2], monster_data[3],
+                         monster_data[4], monster_data[5], monster_data[6], monster_data[7],
+                         monster_data[8], monster_data[9], monster_data[10], monster_data[11], monster_data[12])
         self.__diff = diff
-        self.__name = name
+        # self.__name = name
 
     def get_diff(self):
         self.__diff.get()

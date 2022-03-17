@@ -1,7 +1,9 @@
 import sys
 from abc import ABCMeta, abstractmethod
 from dungeonCharacter import DungeonCharacter
-from mock_game import MockGame as Game
+# from mock_game import MockGame as Game
+from mockannouncement import MockAnnouncement as Announce
+
 import random
 
 
@@ -21,6 +23,9 @@ class Hero(DungeonCharacter):
         self.__vision_p = 0
         self.__health_p = 0
         self.__vision = 0
+
+        self.announce = Announce()
+
 
     def get_chance_to_block_min(self):
         return self.__chance_to_block_min
@@ -73,6 +78,7 @@ class Hero(DungeonCharacter):
         Adventurer's health by a random number.
         :returns: True if potion was used, False otherwise
         """
+        announcement = self.announce
         heal = 50
 
         if self.__health_p > 0:
@@ -86,14 +92,14 @@ class Hero(DungeonCharacter):
 
             # print(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
             self.__game.announce(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
-            self.__game.announce_battle_log(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            announcement.announce(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
 
             return True
 
         elif self.__health_p <= 0:
             # print("You reach for a health potion and find only disappointment.")
             self.__game.announce(f"{self.get_name()} reach for a health potion and find only disappointment.")
-            self.__game.announce_battle_log(f"{self.get_name()} reach for a health potion and find only disappointment.")
+            announcement.announce(f"{self.get_name()} reach for a health potion and find only disappointment.")
 
             return False
 
@@ -146,28 +152,12 @@ class Hero(DungeonCharacter):
         """
         # reminder maxpillars = 4
         if len(self.__pillars) >= self.__MAXPILLARS:
-            # print("You have acquired the knowledge of all four pillars of OO! You leave the dungeon a better programmer!")
-            # sys.exit()
             self.__game.end_game()
             return
         else:
-            # print("You feel like you could escape from\nthis room if only you knew more\nabout programming.")
             self.__game.announce("You feel like you could escape from\nthis room if only you knew more\nabout "
                                  "programming.")
             return
-
-    # def combat(self, attacker, defender):
-    #     super().combat(attacker, defender)
-    #     defender_result = attacker.get_current_hp() - defender.get_attack_damage_range()
-    #     block_chance = random.uniform(.1, 1)
-    #
-    #     if attacker.__chance_to_block >= block_chance:
-    #         print(f"The {attacker} has successfully blocked, resulting in {0} damage to {attacker} hp."
-    #               f"The {attacker} has {attacker.get_current_hp()} hp.")
-    #     else:
-    #         attacker.set_current_hp(attacker.get_current_hp() - defender.get_attack_damage_range())
-    #         print(f"The {attacker} has failed to block, resulting in {defender.get_attack_damage_range()} damage to the "
-    #               f"{attacker} hp. The {attacker} has {attacker.get_current_hp()} hp.")
 
     def __str__(self):
         """
@@ -215,16 +205,18 @@ class Hero(DungeonCharacter):
         return pillar in self.__pillars
 
     def take_damage(self, damage, source):
+        announcement = self.announce
+
         chance = random.uniform(.1, 1)
 
         if self.__chance_to_block >= chance:
-            self.__game.announce_battle_log(f"Block Successful")
+            announcement.announce(f"Block Successful")
             super().take_damage(0, source)
-            self.__game.announce(f"\n")
+            announcement.announce(f"\n")
         else:
-            self.__game.announce_battle_log(f"Block Failed")
+            announcement.announce(f"Block Failed")
             super().take_damage(damage, source)
-            self.__game.announce(f"\n")
+            announcement.announce(f"\n")
 
 # kevin = Hero("Kevin", Game(), 200, 300, 40, 80, 4, .70, .85, .30, .40, .50, 75)
 # talia = Hero("Talia", Game(), 100, 200, 30, 80, 3, .30, .65, .20, .30, .2, .3)
