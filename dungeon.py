@@ -1,10 +1,12 @@
 import random
+from typing import Optional, List
 
-from combatMode import CombatMode
-from phonenix import Phoenix
+# from combatMode import CombatMode
+# from battleground import Battleground
+# from phonenix import Phoenix
 from warrior import Warrior
-from thief import Thief
-from cleric import Cleric
+# from thief import Thief
+# from cleric import Cleric
 # from adventurer import Adventurer
 from room import Room
 from mock_game import MockGame as Game
@@ -19,7 +21,6 @@ class Dungeon:
         self.__diff = diff
         self.__game = game
         self.__war = war
-
         self.__size = 7 + (3 * diff)
         self.__entrance = None
         self.__pl_location = None
@@ -45,51 +46,16 @@ class Dungeon:
     #   Generate + helper functions  #
     ##################################
 
-    def generate_monsters(self, pillar_location_x, pillar_location_y,
-                          exit_location_x, exit_location_y):
-        monster = None
-        monsters = []
-        locations = []
-        for i in range(15):
-            monster_name = random.choice(["emu", "raven", "sphinx"])
-            x = random.randint(0, self.__size)
-            y = random.randint(0, self.__size)
-            locations.append((x, y))
-            while (x, y) in locations:
-                x = random.randint(0, self.__size)
-                y = random.randint(0, self.__size)
-            if monster_name == "emu":
-                monster = Emu(x, y)  # The number lives outside this class
-            elif monster_name == 'raven':
-                monster = Raven(x, y)
-            elif monster_name == "sphinx":
-                monster = Sphinx(pillar_location_x, pillar_location_y, 4)
-            monsters.append(monster)
-        monsters.append(Phoenix(exit_location_x, exit_location_y, 1))
-        return monsters
-
-
     def generate(self) -> None:
         """
         Builds out the dungeon and places objects inside.
         """
         # setup entrance and surrounding rooms
-
-
         rooms_to_build = self.__create_entrance(self.__war)
-
 
         # we have 4 pillars and an exit to place
         pillars = ["E", "I", "A", "P"]
         exit_room = 30 + self.__diff * 10
-
-
-        # exit_room_location = None
-        # pillar_room_location = None
-
-        exit_rooms = []
-        pillar_rooms = []
-
 
         # next, continue adding and linking rooms
         while rooms_to_build:
@@ -98,10 +64,8 @@ class Dungeon:
 
             # use id to place exit and pillars
             if new_room.get_id() == exit_room:
-
-                # exit_room_location = (x, y)
-                exit_rooms.append((x, y))
-
+                # if len(pillars) >= 4:
+                #     append(Phoenix)
                 new_room.set_as_exit()
             elif pillars and new_room.get_id() > (16 * self.__diff):
                 pillar_threshold = {
@@ -110,10 +74,6 @@ class Dungeon:
                     3: 0.02
                 }
                 if random.random() < pillar_threshold[self.__diff]:
-
-                    # pillar_room_location = (x, y)
-                    pillar_rooms.append((x, y))
-
                     new_room.clear_room()
                     new_room.set_pillar(pillars.pop())
 
@@ -152,27 +112,18 @@ class Dungeon:
                     # this a feature, not a bug.
                     new_room.wall(dir)
 
+        # check that sufficient rooms were generated
+        room_cutoff = self.__size * self.__size * .85
+        if self.__room_count < room_cutoff:
+            self.__clear_dungeon()
+            self.generate()
+            return
 
-            # check that sufficient rooms were generated
-            room_cutoff = self.__size * self.__size * .85
-            if self.__room_count < room_cutoff:
-                # print("Maze too small!  Regenerating...")
-                self.__clear_dungeon()
-                self.generate()
-                break
-
-            # check that all pillars and exit were placed
-            if not self.__validate_maze():
-                # print("Objective placement failed!  Regenerating...")
-                self.__clear_dungeon()
-                self.generate()
-                break
-
-        self.__monsters = self.generate_monsters(exit_room_location[0],
-                                                 exit_room_location[1],
-                                                 pillar_room_location[0],
-                                                 pillar_room_location[1])
-
+        # check that all pillars and exit were placed
+        if not self.__validate_maze():
+            self.__clear_dungeon()
+            self.generate()
+            return
 
     def __validate_maze(self):
         """
@@ -223,9 +174,7 @@ class Dungeon:
         # so the exit flag is what makes or breaks things
         return exit_flag
 
-
     def __create_entrance(self, war) -> list[Room]:
-
         """
         Helper function that adds an entrance and four connected rooms
         params:
@@ -241,9 +190,7 @@ class Dungeon:
         entrance_room: Room = self.__make_new_room((x, y))
         entrance_room.clear_room()
         self.__entrance = entrance_room
-
         entrance_room.enter(war)
-
         self.__pl_location = entrance_room
 
         # We do this manually to make sure all rooms surrounding
@@ -302,7 +249,7 @@ class Dungeon:
             room2.link(room1, compliment[dir])
         return
 
-    def __get_room_at(self, location) -> Room:
+    def __get_room_at(self, location) -> Optional[list[None]]:
         """
         Helper method that takes a tuple with x/y coordinates
         and returns the object at that location in room_array
@@ -310,9 +257,6 @@ class Dungeon:
         return self.__room_array[location[1]][location[0]]
 
     def __clear_dungeon(self):
-
-        self.__monsters = []
-
         """
         Helper method to reset the dungeon.
         """
@@ -332,7 +276,6 @@ class Dungeon:
     #####################################
 
     def move_player(self, war: Warrior, dir) -> None:
-
         """
         Moves the player within the dungeon if there's an open door in the specified direction.
         Raises ValueError if dir isn't "n", "w", "e", or "s"
@@ -347,9 +290,7 @@ class Dungeon:
 
         pl_room: Room = self.__pl_location
         target_room: Room = pl_room.get_dir(dir)
-
         pl_name = war.get_name()
-
         dir_names = {
             "n": "north",
             "w": "west",
@@ -358,11 +299,9 @@ class Dungeon:
         }
 
         if target_room:
-
             self.__game.announce(f"{pl_name} heads {dir_names[dir]}.")
 
             target_room.enter(war)
-
             self.__pl_location = target_room
             pl_room.leave()
         else:
