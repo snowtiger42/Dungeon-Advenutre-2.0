@@ -188,6 +188,16 @@ class Room:
         if self.__pillar:
             """put self.__sphinx.quiz() here"""
             war.earn_pillar(self.__pillar)
+            # quiz = Quiz()
+            # if self.__pillar == "A":
+            #     quiz.startQuiz("A")
+            # elif self.__pillar == "E":
+            #     quiz.startQuiz("E")
+            # elif self.__pillar == "I":
+            #     quiz.startQuiz("I")
+            # elif self.__pillar == "P":
+            #     quiz.startQuiz("P")
+
             self.__pillar = False
         if self.__vision_p:
             war.add_vision_potion()

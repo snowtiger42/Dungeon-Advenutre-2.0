@@ -1,0 +1,73 @@
+Team P!(N)K:
+Pranav Venkatesh Ramkrishnan, (Na)talia Nauman, Kevin Perkins
+
+What did we do on this project?
+
+Pranav:
+
+
+(Na)talia:
+
+
+Kevin:
+I was the one who set all the meetings on zoom, set up the GitHub, and organized/turned in all of our work for each iteration. I also provided the Dungeon.
+I made all of the Abstract classes (Dungeon Character, Hero and Monster (Talia helped a bit with Monster)) as well as the hero child classes. I then 
+set to work on making a GUI that would enable the player to combat monsters that they'd encounter within the maze. 
+I'm also organizing the SRS/Synopsis and probably the presentation.
+
+
+Problems we faced?
+
+Pranav:
+
+
+(Na)talia:
+
+
+Kevin:
+I had a difficult time getting the Abstract classes to work initally, which slowed me down. This ended up eating up the amount of time I got to spend on
+the GUI which kept me from adding features that I'd have liked to commit (no resizer again)
+
+
+Total Hours?
+
+Pranav:
+
+
+(Na)talia:
+
+
+Kevin:
+57 Hours and counting.
+
+
+
+Short Comings?
+
+Pranav:
+
+
+(Na)talia:
+
+
+Kevin:
+Wasn't able to get the text produced by combat to be read on the textboxs in time.
+
+
+Items worthy of extra credit?
+
+Pranav:
+
+
+(Na)talia:
+
+
+Kevin:
+Lot of GUI work (especially from the combat)
+
+
+
+
+
+
+

@@ -65,7 +65,6 @@ class DungeonAdventure:
         self.__start_canvas.configure(bg="#FFBF90")
 
         self.__start_canvas.pack(expand=False)
-
         self.__root.bind("<Button-1>", self.__advance_intro)
 
         self.__advance_intro(None)
@@ -722,10 +721,36 @@ class DungeonAdventure:
         """
         Ends the game and makes the appropriate announcements.
         """
-        self.__game_over = True
+
         self.announce(self.__hero.__str__())
+        self.__game_over = True
+
         if self.__hero.is_dead():
             self.announce("You lose!  Better luck next time!")
         else:
             self.announce("Victory is yours!\nYou have taken the four pillars of object-oriented \nprogramming!")
             self.announce("Without them, the dungeon crumbles behind you.  Whoops!")
+
+        # self.announce(self.__hero.__str__())
+        # self.announce(f"Completed the Dungeon, Do you wish to play again? type 'y' to go again, or 'n' to end the game."
+        #               f" {input()}")
+        # affirmative = input('y')
+        # negative = input('n')
+        #
+        # while not affirmative or negative:
+        #     if affirmative:
+        #         self.__start_game()
+        #     elif negative:
+        #         print("GAME OVER!!!")
+        #         self.__game_over = True
+        #     else:
+        #         self.announce(f"please input either 'y' or 'n' {input()}")
+        #
+        # if self.__hero.is_dead():
+        #     self.announce("You lose!  Better luck next time!")
+        #     self.announce(f"Do you wish to play again? type 'y' to go again, or 'n' to end the game. {input()}")
+        #     self.__game_over = True
+        # else:
+        #     self.announce("Victory is yours!\nYou have taken the four pillars of object-oriented \nprogramming!")
+        #     self.announce("Without them, the dungeon crumbles behind you.  Whoops!")
+
