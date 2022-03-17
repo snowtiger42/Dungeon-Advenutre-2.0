@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 import random
 from dungeonCharacter import DungeonCharacter
 from monster import Monster
-import sqliteselect
+import sqliteselect_monsters
 
 """
 self, name, game, min_hp, max_hp, attack_min, attack_max, \

@@ -1,8 +1,8 @@
 import tkinter as tk
-import sqlite_creation
-import sqliteinsert
+import sqlitecreation_monsters
+import sqliteinsert_monsters
 import sqliteupdate
-import sqliteselect
+import sqliteselect_monsters
 import random
 from tkinter import *
 from battleground import Battleground

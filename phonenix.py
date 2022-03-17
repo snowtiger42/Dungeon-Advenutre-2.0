@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 import random
 from monster import Monster
-import sqliteselect
+import sqliteselect_monsters
 
 
 class Phoenix(Monster):
