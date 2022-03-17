@@ -1,12 +1,13 @@
 from abc import ABCMeta, abstractmethod
 import random
 from monster import Monster
+from mock_game import MockGame as Game
 
 
 class Phoenix(Monster):
-    def __init__(self, diff, name):
-        super().__init__(name, 250, 333, range(250, 333), range(250, 333), 33, 44, range(33, 44), 3, .60,
-                         .75, random.uniform(.60, .75), .3, .5, random.uniform(.3, .5), .30, .5, 20)
+    def __init__(self, diff, name, game):
+        super().__init__(name, game, 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20)
+        self.__game = game
         self.__diff = diff
         self.__name = name
 
@@ -20,17 +21,22 @@ class Phoenix(Monster):
     def set_name(self, name):
         self.__name = "Phoenix"
 
-    # overriding 'is_dead' method
-    def is_dead(self):
-        if self.__current_hp <= 0:
-            return self.__current_hp <= 0
-        else:
-            return False
 
-    # def __str__(self):
-    #     prefix = super().__str__()
-    #     p = format(prefix)
-    #     return print(p)
+# p = Phoenix(1, "Phoenix", Game())
+# print(p)
+#
+# p.take_damage(1000, "Hero")
+#
+# print(p)
+#
+# p.regenerate()
+# p.regenerate()
+# p.regenerate()
+#
+# print(p)
 
-p = Phoenix(1, "Phoenix")
-print(p)
+# print("\n------------------------print adventurer status (TIME TO DIE!!!)-------------------------")
+# print(p)
+# p.take_damage(2000, "extra legendary pit")
+# print(p)
+
