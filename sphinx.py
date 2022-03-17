@@ -1,9 +1,9 @@
 
 from abc import ABCMeta, abstractmethod
 import random
-
 from dungeonCharacter import DungeonCharacter
 from monster import Monster
+import sqliteselect_monsters
 
 """
 self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, attack_damage_range,
@@ -14,9 +14,21 @@ self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, at
 
 
 class Sphinx(Monster):
-    def __init__(self, diff, name, game):
-        super().__init__(name, game, 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20)
-        self.__game = game
+    def __init__(self, diff, name=None, game=None):
+        database = r"monsters.db"
+
+        # create a database connection
+        conn = sqliteselect_monsters.create_connection(database)
+        with conn:
+            print("1. Query task by priority:")
+            # select_monster(conn, 'sphinx')
+            monster_data = sqliteselect_monsters.select_monster(conn, 'sphinx')
+        print(monster_data[0])  # access each number individually
+
+        super().__init__(monster_data[0], game, monster_data[1], monster_data[2], monster_data[3],
+                         monster_data[4], monster_data[5], monster_data[6], monster_data[7],
+                         monster_data[8], monster_data[9], monster_data[10], monster_data[11], monster_data[12])
+
         self.__diff = diff
         self.__name = name
 
@@ -31,8 +43,6 @@ class Sphinx(Monster):
         self.__name = "Sphinx"
 
 
-# if __name__ == "__main__":
-#     test = Sphinx(10)
-#     test.take_damage(500, test)
-#     if test.is_dead():
-#         print(test.get_current_hp())
+if __name__ == "__main__":
+    test = Sphinx(10)
+
