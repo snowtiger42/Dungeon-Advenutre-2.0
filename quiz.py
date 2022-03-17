@@ -159,11 +159,11 @@ class Quiz:
 
     def quiz_grade(self, grade, hero, monster):
         if grade:
-            self.__canvas.destroy()
+            pass
         else:
             battle = Battleground()
             battle.combat(hero, monster)
-            self.__canvas.destroy()
+        self.__canvas.destroy()
 
 
 if __name__ == "__main__":
@@ -205,4 +205,3 @@ if __name__ == "__main__":
     #                          'system.', 'False')
     # q.insert('Polymorphism', 'Polymorphism is particularly effective for implementing layered software systems.', 'True')
     # q.insert('Polymorphism', 'Casting superclass references to subclass references is known as downcasting.', 'True')
-    # q.start_quiz('Final Boss')

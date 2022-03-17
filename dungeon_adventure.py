@@ -11,6 +11,8 @@ from emu import Emu
 # from phonenix import Phoenix
 
 from dungeon import Dungeon
+from sound_fx import SoundFx
+from sound_menu import SoundMenu
 
 # import PIL
 # from practice_gui import Practice_gui
@@ -33,6 +35,8 @@ class DungeonAdventure:
         self.__root.title("Dungeon Adventure")
 
         self.__intro_slide = 0
+        self.__sound = SoundFx()
+        self.__sound_menu = SoundMenu()
 
         self.__start_canvas = None
         self.__dungeon_display = None
@@ -67,6 +71,7 @@ class DungeonAdventure:
 
         self.__root.bind("<Button-1>", self.__advance_intro)
 
+        self.__sound.intro()
         self.__advance_intro(None)
 
     def __advance_intro(self, keypress): #Replace some of the slides to explain new features/show the names of the new developers
@@ -141,6 +146,7 @@ class DungeonAdventure:
         Sets up the main game interface and binds the controls to enable play.
         """
         self.__reset_start_canvas(None)
+        self.__sound.in_game()
 
         # Setup dungeon & get size
         self.__dungeon = Dungeon(self.__diff, self, self.__hero)
@@ -244,6 +250,7 @@ class DungeonAdventure:
         help_menu.add_command(label="Dungeon Key", command=self.__dungeon_key_images)
         help_menu.add_command(label="Help request", command=self.__donothing)
         help_menu.add_command(label="Hero Class Info", command=self.__display_class_info)
+        # help_menu.add_command(label="Sound Menu", command=self.__sound_menu.sound_menu(self.__sound, in_game=True))
 
         menu_bar.add_cascade(label="Help", menu=help_menu)
 
@@ -377,21 +384,35 @@ class DungeonAdventure:
         """
         Gives the player a briefing on how to play the game.
         """
-        instructions = Toplevel(self.__root)
-        instructions.title("Instructions")
+        self.__reset_start_canvas("DA_title_bigger.png")
 
-        button = Button(instructions, font="Verdana 19 bold", text="""Welcome!!! You are about to brave our maze 
-        inorder to find the four pillars of OO! Only by collecting these four pillars, will you be able to escape the 
-        maze and win the game. In this maze, you will use the 'w' letter to head up, the 'd' letter to go right, 
-        the 's' letter to go down and the 'a' letter to go left. Be careful though, for there are pits within the 
-        maze that can injure you and if you take to much damage, you will DIE!!! If that happens, the game ends and 
-        you'll start over with a new adventurer and a new maze. To help you survive, we have placed some potions 
-        within the maze to either restore your HP (health points) by pressing the 'h' button. Or, to help you see 
-        deeper within the maze, press the 'j' button. If You wish to check your adventurers stats, press the 'q' button.
-        Once you've found all four pillars of OO, find the room with the 0 mark in the maze and enter it to complete the
-        maze. Important to note, if the edges have holes, you can walk through them and it'll warp you to the other 
-        side of the maze!!!""")
-        button.pack()
+        tb_x = self.__window_size[0] // 2
+        tb_y = self.__window_size[1] // 2
+        self.__quiz_text = tk.Text(self.__start_canvas, width=100, height=20)
+        self.__quiz_text.place(x=tb_x, y=tb_y, anchor=CENTER)
+
+        self.__quiz_text.insert("end", "Hello! You have a choice of Three classes to choose from. \n\n"
+                                       "Warrior: The warrior has the highest HP, Attack and chance to block. \nThey "
+                                       "also "
+                                       " have the lowest speed, accuracy and chance to dodge. \nTheir special move is"
+                                       " Crushing Blow and deals three times their \nregular damage, but at the cost of"
+                                       "it being half their normal accuracy.\n\n"
+                                       "Cleric: The cleric has average HP, Attack, Speed, accuracy and \nchance to "
+                                       "dodge/block. Their special move is Heal and will restore a \nset amount of "
+                                       "HP.\n "
+                                       "\nThief: The thief has the lowest HP, Attack and chance to block. \nHowever."
+                                       " they have the highest speed, accuracy and chance to dodge.\nTheir special"
+                                       " move is sneak attack and it enables the player to attack twice.\nHowever, it "
+                                       "only has a 40% chance of success with another 40% \ndelegated to dealing "
+                                       "regular "
+                                       " damage. The final 20% has a possibility \nof missing entirely.")
+
+        button_y = self.__window_size[1] // 2 + 240
+        button_x = self.__window_size[0] // 2 - 40
+
+        menu_button = tk.Button(text='Continue', font="Verdana 10 bold", width=10)
+        self.__start_canvas.create_window(button_x, button_y, window=menu_button)
+        menu_button.config(command=lambda: self.__start_menu())
 
     def __dungeon_key_images(self):
         """
