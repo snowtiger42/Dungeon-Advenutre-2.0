@@ -172,7 +172,6 @@ class Room:
         self.__raven = False
         self.__emu = False
 
-
     def set_as_exit(self):
         """
         Deletes all items from the room and then sets room as exit.
@@ -208,9 +207,9 @@ class Room:
             return
         if self.__pillar:
             quiz = Quiz()
-            self.__monster = Sphinx(self.__diff, "Sphinx", Game())
             war.earn_pillar(self.__pillar)
             self.__pillar = False
+            self.__monster = Sphinx(self.__diff, "Sphinx", Game())
             quiz.start_quiz(self.__quiz_type, war, self.__monster)
         if self.__vision_p:
             war.add_vision_potion()
@@ -234,4 +233,3 @@ class Room:
             battleground.combat(war, self.__monster)
 
         self.__has_player = True
-

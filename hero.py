@@ -150,8 +150,10 @@ class Hero(DungeonCharacter):
         """
         Ends the game if the adventurer has all four pillars.  Makes an announcement either way.
         """
-        # reminder maxpillars = 4
         if len(self.__pillars) >= self.__MAXPILLARS:
+            self.__game.end_game()
+            return
+        elif self.get_current_hp() <= 0:
             self.__game.end_game()
             return
         else:

@@ -44,20 +44,31 @@ class SqliteMonster:
         else:
             print("Error! cannot create the database connection.")
 
-    def insert(self):
+    def insert(self, monsters, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
+               chance_to_hit_max,
+               chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
+               chance_to_regenerate_max, regenerate_amount):
         database = r"monsters.db"
 
-        # create a database connection
         conn = self.sqlite_insert.create_connection(database)
         with conn:
-            # create a new project
-            monsters = (('emu', 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20),
-                        ('phoenix', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
-                        ('raven', 100, 120, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
-                        ('sphinx', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20))
-            project_id = self.sqlite_insert.create_project(conn, monsters)
-            # for monster in monsters:
-            #     project_id = create_project(conn, monster)
+            monsters = (monsters, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
+                        chance_to_hit_max,
+                        chance_to_hit, chance_to_dodge_min, chance_to_regenerate_min,
+                        chance_to_regenerate_max, regenerate_amount)
+            self.sqlite_insert.create_project(conn, monsters)
+
+        # create a database connection
+        # conn = self.sqlite_insert.create_connection(database)
+        # with conn:
+        #     # create a new project
+        #     monsters = (('emu', 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20),
+        #                 ('phoenix', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
+        #                 ('raven', 100, 120, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20),
+        #                 ('sphinx', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20))
+        #     project_id = self.sqlite_insert.create_project(conn, monsters)
+        # for monster in monsters:
+        #     project_id = create_project(conn, monster)
 
     def select(self):
         database = r"monsters.db"
@@ -75,5 +86,8 @@ class SqliteMonster:
 if __name__ == "__main__":
     m = SqliteMonster()
     m.create()
-    m.insert()
+    m.insert('emu', 250, 333, 33, 44, 3, .60, .75, .3, .5, .30, .5, 20)
+    m.insert('phoenix', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)
+    m.insert('raven', 100, 120, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)
+    m.insert('sphinx', 250, 333, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)
     m.select()

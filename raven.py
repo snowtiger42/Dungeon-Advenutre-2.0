@@ -1,10 +1,8 @@
 from abc import ABCMeta, abstractmethod
 import random
-
 from dungeonCharacter import DungeonCharacter
 from monster import Monster
-from mock_game import MockGame as Game
-
+from sqliteselect import Select
 
 """
 self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, attack_damage_range,
@@ -12,37 +10,38 @@ self, name, min_hp, max_hp, generated_hp, current_hp, attack_min, attack_max, at
                  chance_to_dodge_max, chance_to_dodge, chance_to_regenerate_min, chance_to_regenerate_max,
                  regenerate_amount
 """
+
+
 class Raven(Monster):
-    def __init__(self, diff, name, game):
-        super().__init__(name, game, 100, 120, 40, 60, 1, .40, .60, .10, .25, .10, .20, 20)
-        self.__game = game
+    def __init__(self, diff, name=None, game=None):
+        database = r"monsters.db"
+        s = Select()
+
+        # create a database connection
+        conn = s.create_connection(database)
+        with conn:
+            print("1. Query task by priority:")
+            # select_monster(conn, 'raven')
+            monster_data = s.select_monster(conn, 'raven')
+        print(monster_data[0])  # access each number individually
+
+        super().__init__(monster_data[0], game, monster_data[1], monster_data[2], monster_data[3],
+                         monster_data[4], monster_data[5], monster_data[6], monster_data[7],
+                         monster_data[8], monster_data[9], monster_data[10], monster_data[11], monster_data[12])
+
         self.__diff = diff
         self.__name = name
 
     def get_diff(self):
         self.__diff.get()
 
+    # overriding 'name' method
     def get_name(self):
         return self.__name
 
     def set_name(self, name):
         self.__name = "Raven"
 
-# jack = Raven(1, "Raven", Game())
-# jill = Raven(1, "Raven", Game())
-# jack.fight(jack, jill)
 
-
-    # def __str__(self):
-    #     self.__game.announcement(f"{super().__str__()}")
-
-
-# a = Raven(1, "Raven", Game())
-# print(a)
-# if __name__ == "__main__":
-#     test = Raven(10)
-#     test.take_damage(500, test)
-#     if test.is_dead():
-#         print(test.get_current_hp())
-
-
+if __name__ == "__main__":
+    test = Raven(10)
