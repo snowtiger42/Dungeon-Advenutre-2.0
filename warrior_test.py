@@ -61,7 +61,7 @@ class Warrior_Test(unittest.TestCase):
 
     def test_Take_Damage(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.take_damage(1000, source="unit tests"), None)
+        self.assertEqual(my_adventurer.take_damage(1000, source="unit tests"), my_adventurer.set_current_hp(0))
 
     def test_Exit_Fail(self):
         my_adventurer = Warrior("Jack", Game())
@@ -76,7 +76,7 @@ class Warrior_Test(unittest.TestCase):
     def test_Special_Move(self):
         my_adventurer = Warrior("Jack", Game())
         monster = Emu(1)
-        self.assertEqual(my_adventurer.special_move(monster), True)
+        self.assertEqual(my_adventurer.special_move(monster), False)
 
     def test_Chance_To_Hit(self):
         my_adventurer = Warrior("Jack", Game())
