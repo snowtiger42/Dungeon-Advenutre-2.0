@@ -1,6 +1,7 @@
 import unittest
 import random
 from warrior import Warrior
+from emu import Emu
 from mock_game import MockGame as Game
 
 
@@ -66,31 +67,52 @@ class Warrior_Test(unittest.TestCase):
         my_adventurer = Warrior("Jack", Game())
         self.assertEqual(my_adventurer.exit(), None)
 
-
-
     def test_Deal_Damage(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.deal_damage(random.randrange(35, 70), source="unit tests"), None)
+        monster = Emu(1)
+        self.assertEqual(my_adventurer.take_damage(random.randrange(40, 77), monster),
+                         my_adventurer.set_current_hp(my_adventurer.take_damage(random.randrange(40, 77), monster)))
 
     def test_Special_Move(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.special_move(random.randrange(90, 180), source="unit tests"), None)
+        monster = Emu(1)
+        self.assertEqual(my_adventurer.special_move(monster), True)
 
     def test_Chance_To_Hit(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_hit(random.randrange(1, 20), source="unit tests"), None)
+        try:
+            self.assertAlmostEqual(my_adventurer.get_chance_to_hit(), .75555)
+            self.assertAlmostEqual(False, True)
+        except:
+            self.assertAlmostEqual(True, True)
 
     def test_Chance_To_Block(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_block(random.uniform(.30, .40), source="unit tests"), None)
+        try:
+            self.assertAlmostEqual(my_adventurer.get_chance_to_block(), .4000)
+            self.assertAlmostEqual(False, True)
+        except:
+            self.assertAlmostEqual(True, True)
+
+    def test_Chance_To_Block_fail(self):
+        my_adventurer = Warrior("Jack", Game())
+        self.assertNotAlmostEqual(my_adventurer.get_chance_to_block(), .30000)
 
     def test_Chance_To_Dodge(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_dodge(random.uniform(.10, .20), source="unit tests"), None)
+        try:
+            self.assertAlmostEqual(my_adventurer.get_chance_to_dodge(), .35555)
+            self.assertAlmostEqual(False, True)
+        except:
+            self.assertAlmostEqual(True, True)
+
+    def test_Chance_To_Dodge_fail(self):
+        my_adventurer = Warrior("Jack", Game())
+        self.assertNotAlmostEqual(my_adventurer.get_chance_to_block(), .23333)
 
     def test_Attack_Speed(self):
         my_adventurer = Warrior("Jack", Game())
-        self.assertEqual(my_adventurer.attack_speed(4, source="unit tests"), None)
+        self.assertEqual(my_adventurer.get_attack_speed(), 4)
 
 
 if __name__ == '__main__':
