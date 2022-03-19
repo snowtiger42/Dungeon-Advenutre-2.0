@@ -1,12 +1,13 @@
 import unittest
 import random
 from cleric import Cleric
+from raven import Raven
 from mock_game import MockGame as Game
 
 
 class Cleric_Test(unittest.TestCase):
     def test_init(self):
-        my_adventurer = Cleric("Jack", Game())
+        self.my_adventurer = Cleric("Jack", Game())
 
     def test_name(self):
         my_adventurer = Cleric("Jack", Game())
@@ -66,32 +67,48 @@ class Cleric_Test(unittest.TestCase):
         my_adventurer = Cleric("Jack", Game())
         self.assertEqual(my_adventurer.exit(), None)
 
-
-
     def test_Deal_Damage(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.deal_damage(random.randrange(20, 40), source="unit tests"), None)
+        monster = Raven(1)
+        self.assertEqual(my_adventurer.take_damage(random.randrange(40, 77), monster),
+                         my_adventurer.set_current_hp(my_adventurer.take_damage(random.randrange(40, 77), monster)))
 
     def test_Special_Move(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.special_move(random.randrange(25, 50), source="unit tests"), None)
+        self.assertEqual(my_adventurer.special_move(my_adventurer), True)
 
-    def test_Chance_To_Hit(self):
+    def test_Chance_To_Hit_fail(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_hit(random.randrange(1, 20), source="unit tests"), None)
+        self.assertNotEqual(my_adventurer.get_chance_to_hit(), random.uniform(my_adventurer.get_chance_to_hit_min(),
+                                                                              my_adventurer.get_chance_to_hit_max()))
 
     def test_Chance_To_Block(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_block(random.uniform(.20, .30), source="unit tests"), None)
+        try:
+            self.assertAlmostEqual(my_adventurer.get_chance_to_block(), .3555)
+            self.assertAlmostEqual(False, True)
+        except:
+            self.assertAlmostEqual(True, True)
+
+    def test_Chance_To_Block_fail(self):
+        my_adventurer = Cleric("Jack", Game())
+        self.assertNotAlmostEqual(my_adventurer.get_chance_to_block(), .3555)
 
     def test_Chance_To_Dodge(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.chance_to_dodge(random.uniform(.30, .40), source="unit tests"), None)
+        try:
+            self.assertAlmostEqual(my_adventurer.get_chance_to_dodge(), .5000)
+            self.assertAlmostEqual(False, True)
+        except:
+            self.assertAlmostEqual(True, True)
+
+    def test_Chance_To_Dodge_fail(self):
+        my_adventurer = Cleric("Jack", Game())
+        self.assertNotAlmostEqual(my_adventurer.get_chance_to_dodge(), .5)
 
     def test_Attack_Speed(self):
         my_adventurer = Cleric("Jack", Game())
-        self.assertEqual(my_adventurer.attack_speed(5, source="unit tests"), None)
-
+        self.assertEqual(my_adventurer.get_attack_speed(), 5)
 
 
 if __name__ == '__main__':
