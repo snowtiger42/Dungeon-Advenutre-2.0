@@ -1,8 +1,5 @@
-import random
-# from healAble import HealAble
 from hero import Hero
 from mockannouncement import MockAnnouncement as Announce
-
 
 
 class Cleric(Hero):
@@ -11,10 +8,10 @@ class Cleric(Hero):
     """
     def __init__(self, name, game):
         super().__init__(name, game, 200, 275, 40, 77, 5, .80, .90, .4, .6, .30, .4)
-        # self.__name = name
         self.__game = game
         self.announce = Announce()
 
+    """instantiation of clerics special move"""
     def special_move(self, defender):
         heal = 66
         new_hp = self.get_current_hp() + heal

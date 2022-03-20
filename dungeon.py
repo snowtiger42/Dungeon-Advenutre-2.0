@@ -1,13 +1,6 @@
 import random
 from typing import Optional, List
-
-# from combatMode import CombatMode
-# from battleground import Battleground
-# from phonenix import Phoenix
 from warrior import Warrior
-# from thief import Thief
-# from cleric import Cleric
-# from adventurer import Adventurer
 from room import Room
 from mock_game import MockGame as Game
 
@@ -64,8 +57,6 @@ class Dungeon:
 
             # use id to place exit and pillars
             if new_room.get_id() == exit_room:
-                # if len(pillars) >= 4:
-                #     append(Phoenix)
                 new_room.set_as_exit()
             elif pillars and new_room.get_id() > (16 * self.__diff):
                 pillar_threshold = {

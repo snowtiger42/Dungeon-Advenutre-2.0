@@ -2,21 +2,12 @@ import tkinter as tk
 from warrior import Warrior
 from thief import Thief
 from cleric import Cleric
-# from dungeonCharacter import DungeonCharacter
-# from hero import Hero
+from quiz import Quiz
+from phonenix import Phoenix
 
-# from raven import Raven
-from emu import Emu
-# from sphinx import Sphinx
-# from phonenix import Phoenix
 
 from dungeon import Dungeon
 from sound_fx import SoundFx
-from sound_menu import SoundMenu
-
-# import PIL
-# from practice_gui import Practice_gui
-# from PIL import ImageTk, Image
 
 from tkinter import *
 import re
@@ -27,17 +18,15 @@ class DungeonAdventure:
     def __init__(self):
         self.__dungeon = None
         self.__hero = None
-        self.__monster = Emu(1, "Emu", Game())
+        self.__monster = None
         self.__diff = 1
         self.__root = tk.Tk()
         self.__window_size = (1150, 875)
         self.__root.geometry(f"{self.__window_size[0]}x{self.__window_size[1]}+250+100")
         self.__root.title("Dungeon Adventure")
+        self.__sound = SoundFx()
 
         self.__intro_slide = 0
-        self.__sound = SoundFx()
-        self.__sound_menu = SoundMenu()
-
         self.__start_canvas = None
         self.__dungeon_display = None
         self.__message_log = None
@@ -45,7 +34,6 @@ class DungeonAdventure:
 
         self.__omniscience = False
         self.__game_over = False
-
         self.__make_help_menu()
         self.__initialize_intro()
 
@@ -65,7 +53,7 @@ class DungeonAdventure:
         """
 
         self.__start_canvas = tk.Canvas(self.__root, width=self.__window_size[0], height=self.__window_size[1])
-        self.__start_canvas.configure(bg="#FFBF90")
+        self.__start_canvas.configure(bg="#000000")
 
         self.__start_canvas.pack(expand=False)
 
@@ -224,33 +212,19 @@ class DungeonAdventure:
         menu_bar = Menu(self.__root)
 
         filemenu = Menu(menu_bar, tearoff=0)
-        filemenu.add_command(label="New", command=self.__donothing)
-        filemenu.add_command(label="Open", command=self.__donothing)
-        filemenu.add_command(label="Save", command=self.__donothing)
-        filemenu.add_command(label="Save as...", command=self.__donothing)
-        filemenu.add_command(label="Close", command=self.__donothing)
-
         filemenu.add_separator()
 
         filemenu.add_command(label="Exit", command=self.__root.quit)
         menu_bar.add_cascade(label="File", menu=filemenu)
         editmenu = Menu(menu_bar, tearoff=0)
-        editmenu.add_command(label="Undo", command=self.__donothing)
 
         editmenu.add_separator()
-
-        editmenu.add_command(label="Cut", command=self.__donothing)
-        editmenu.add_command(label="Copy", command=self.__donothing)
-        editmenu.add_command(label="Paste", command=self.__donothing)
-        editmenu.add_command(label="Delete", command=self.__donothing)
-        editmenu.add_command(label="Select All", command=self.__donothing)
 
         help_menu = Menu(menu_bar, tearoff=0)
         help_menu.add_command(label="Cheats", command=self.__display_cheats)
         help_menu.add_command(label="Dungeon Key", command=self.__dungeon_key_images)
         help_menu.add_command(label="Help request", command=self.__donothing)
         help_menu.add_command(label="Hero Class Info", command=self.__display_class_info)
-        # help_menu.add_command(label="Sound Menu", command=self.__sound_menu.sound_menu(self.__sound, in_game=True))
 
         menu_bar.add_cascade(label="Help", menu=help_menu)
 

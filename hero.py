@@ -10,8 +10,6 @@ import random
 class Hero(DungeonCharacter):
     def __init__(self, name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
                  chance_to_hit_max, chance_to_dodge_min, chance_to_dodge_max, chance_to_block_min, chance_to_block_max):
-        # if self.__class__ == Hero:
-        #     raise Exception('I am abstract!')
         super().__init__(name, game, min_hp, max_hp, attack_min, attack_max, attack_speed, chance_to_hit_min,
                          chance_to_hit_max, chance_to_dodge_min, chance_to_dodge_max)
         self.__game = game
@@ -23,9 +21,7 @@ class Hero(DungeonCharacter):
         self.__vision_p = 0
         self.__health_p = 0
         self.__vision = 0
-
         self.announce = Announce()
-
 
     def get_chance_to_block_min(self):
         return self.__chance_to_block_min
@@ -45,19 +41,19 @@ class Hero(DungeonCharacter):
     def set_chance_to_block(self, block_chance):
         self.__chance_to_block = block_chance
 
+    """abstract method that will be carried over to child classes. reason being that even though all child classes will" \
+    "have aspecial_move, they will operate very differently from each other"""
     @abstractmethod
     def special_move(self, defender):
         pass
 
     def earn_pillar(self, pillar):
         """
-        Called by Room to add pillars to Adventurer's inventory.
+        Called by Room to add pillars to Hero's inventory.
         """
 
         if pillar == "A" or pillar == "E" or pillar == "I" or pillar == "P":
             self.__pillars.append(pillar)
-            # print(f"Earned a pillar!  You now have {self.__pillars}")
-
             self.__game.announce(f"Earned a pillar!  You now have {self.__pillars}")
 
         else:
@@ -68,14 +64,13 @@ class Hero(DungeonCharacter):
         Increments health potion count by 1.
         """
         self.__health_p += 1
-        # print(f"You pick up a health potion.\nYou now have {self.__health_p} of them.")
         self.__game.announce(f"You pick up a health potion.\nYou now have {self.__health_p} of them.")
         return self.__health_p
 
-    def use_health_potion(self):  ####error not usable
+    def use_health_potion(self):
         """
-        If the Adventurer has any health potions, uses one and increases
-        Adventurer's health by a random number.
+        If the Hero has any health potions, uses one and increases
+        Hero's health by a random number.
         :returns: True if potion was used, False otherwise
         """
         announcement = self.announce
@@ -90,14 +85,14 @@ class Hero(DungeonCharacter):
             else:
                 self.set_current_hp(new_hp)
 
-            # print(f"Used a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
-            self.__game.announce(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
-            announcement.announce(f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            self.__game.announce(
+                f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
+            announcement.announce(
+                f"{self.get_name()} a health potion! It heals {heal} HP, bringing you to {self.get_current_hp()}.")
 
             return True
 
         elif self.__health_p <= 0:
-            # print("You reach for a health potion and find only disappointment.")
             self.__game.announce(f"{self.get_name()} reach for a health potion and find only disappointment.")
             announcement.announce(f"{self.get_name()} reach for a health potion and find only disappointment.")
 
@@ -108,31 +103,28 @@ class Hero(DungeonCharacter):
         Increments vision potion count by 1.
         """
         self.__vision_p += 1
-        # print(f"You pick up a vision potion.\nYou now have {self.__vision_p} of them.")
         self.__game.announce(f"You pick up a vision potion.\nYou now have {self.__vision_p} of them.")
         return self.__vision_p
 
     def use_vision_potion(self):
         """
-        Uses a vision potion if the Adventurer has one.
+        Uses a vision potion if the Hero has one.
         :returns: True if potion used, False otherwise.
         """
         if self.__vision_p > 0:
             self.__vision_p -= 1
             self.__vision += 2
-            # print(f"Your vision has temporarily increased to {self.__vision}!")
 
             self.__game.announce(f"Your vision has temporarily increased to {self.__vision}!")
             return True
 
         else:
-            # print("You look for a vision potion but don't see one.")
             self.__game.announce("You look for a vision potion but don't see one.")
             return False
 
     def get_vision_range(self):
         """
-        Returns vision range of adventurer.
+        Returns vision range of Hero.
         """
         return self.__vision
 
@@ -142,16 +134,17 @@ class Hero(DungeonCharacter):
         """
         if self.__vision > 0:
             self.__vision -= 1
-            # print("The effects of your vision potion fade a little.")
 
             self.__game.announce("The effects of your vision potion fade a little.")
 
     def exit(self):
         """
-        Ends the game if the adventurer has all four pillars.  Makes an announcement either way.
+        Ends the game if the Hero has all four pillars, or if they run out of HP.  Makes an announcement either way.
         """
-        # reminder maxpillars = 4
         if len(self.__pillars) >= self.__MAXPILLARS:
+            self.__game.end_game()
+            return
+        elif self.get_current_hp() <= 0:
             self.__game.end_game()
             return
         else:
@@ -159,6 +152,21 @@ class Hero(DungeonCharacter):
                                  "programming.")
             return
 
+    def take_damage(self, damage, source):
+        announcement = self.announce
+
+        chance = random.uniform(.1, 1)
+
+        if self.__chance_to_block >= chance:
+            announcement.announce(f"Block Successful")
+            super().take_damage(0, source)
+            announcement.announce(f"\n")
+        else:
+            announcement.announce(f"Block Failed")
+            super().take_damage(damage, source)
+            announcement.announce(f"\n")
+
+    """produces the string stats for dungeon character and hero (this will be carried over into it's children)"""
     def __str__(self):
         """
         Returns a string representation of the Hero.
@@ -204,19 +212,7 @@ class Hero(DungeonCharacter):
     def is_pillar_in_inventory(self, pillar):
         return pillar in self.__pillars
 
-    def take_damage(self, damage, source):
-        announcement = self.announce
 
-        chance = random.uniform(.1, 1)
-
-        if self.__chance_to_block >= chance:
-            announcement.announce(f"Block Successful")
-            super().take_damage(0, source)
-            announcement.announce(f"\n")
-        else:
-            announcement.announce(f"Block Failed")
-            super().take_damage(damage, source)
-            announcement.announce(f"\n")
 
 # kevin = Hero("Kevin", Game(), 200, 300, 40, 80, 4, .70, .85, .30, .40, .50, 75)
 # talia = Hero("Talia", Game(), 100, 200, 30, 80, 3, .30, .65, .20, .30, .2, .3)
