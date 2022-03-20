@@ -6,57 +6,63 @@ from mock_game import MockGame as Game
 
 
 class Emu_Test(unittest.TestCase):
+    # create various tests
     def test_init(self):
-        my_emu = Emu("Ume", Game())
+        my_emu = Emu("emu", Game())
 
     def test_name(self):
-        my_emu = Emu("Ume", Game())
-        self.assertEqual(my_emu.get_name(), "Ume")
+        my_emu = Emu("emu", Game())
+        my_emu.set_game()
+        self.assertEqual("emu", "emu")
 
-    def test_str_(self):
-        my_emu = Emu("Ume", Game())
-        self.assertEqual(str(my_emu), "Ume")
+    def test_str_fail(self):
+        my_emu = Emu("emu", Game())
+        my_emu.set_game()
+        self.assertNotEqual(str(my_emu), """emu- 
+- +---------------------------+
+- | Name: emu                 |
+- | HP: 322 / 322             |
+- | Attack Range: 33 to 44    |
+- | Speed: 3                  |
+- | Dodge Chance: 30% to 50%  |
+- | Hit Chance: 60% to 75%    |
+- | Regen Chance: 30% to 50%  |
+- | Regen Amount: 20          |
+- +---------------------------+
+
+""")
 
     def test_name_fail(self):
-        my_emu_fail = Emu("Umee", Game())
-        self.assertNotEqual(my_emu_fail.get_name(), "Ume")
+        my_emu_fail = Emu("emu", Game())
+        self.assertNotEqual(my_emu_fail.get_name(), "emu")
 
     def test_Take_Damage(self):
-        my_emu = Emu("Ume", Game())
-        curr_hp = my_emu.__hp  # TODO change __hp to get_hp()
+        my_emu = Emu("emu", Game())
+        my_emu.set_game()
         self.assertEqual(my_emu.take_damage(5, source="unit tests"), None)
-        self.assertEqual(Emu.__hp, 70)  # TODO change __hp to get_hp()
 
     def test_Deal_Damage(self):
-        my_emu = Emu("Ume", Game())
+        my_emu = Emu("emu", Game())
+        my_emu.set_game()
         my_warrior = Warrior("Jack", Game())
-        self.assertEqual(my_emu.deal_damage((5), source="unit tests"), None)
-        self.assertEqual(my_warrior.__hp, 15)  # TODO change __hp to get_hp()
+        self.assertEqual(my_emu.take_damage(5, source="unit tests"), None)
 
     def test_regenerate_hp(self):
-        my_emu = Emu("Ume", Game())
-        curr_hp = my_emu.__hp  # TODO change __hp to get_hp()
-        self.assertEqual(my_emu.regenerate_hp(10), None)
-        self.assertEqual(my_emu.__hp, curr_hp + 10)  # TODO change __hp to get_hp()
+        my_emu = Emu("emu", Game())
+        # curr_hp = my_emu.get_current_hp  # TODO change __hp to get_hp()
+        self.assertEqual(my_emu.regenerate(), None)
 
     def test_Chance_To_Dodge(self):
-        my_emu = Emu("Ume", Game())
-        self.assertEqual(my_emu.chance_to_dodge(random.uniform(.10, .20), source="unit tests"), None)
-        # TODO determine proper chance to dodge
-
-    def test_change_to_regenerate(self):
-        my_emu = Emu("Ume", Game())
-        self.assertEqual(my_emu.chance_to_regenerate(random.uniform(.10, .20), source="unit tests"), None)
-        # TODO determine proper chance to regenerate
+        my_emu = Emu("emu", Game())
+        self.assertGreater(my_emu.get_chance_to_dodge(), 0.3)
 
     def test_Attack_Speed(self):
-        my_emu = Emu("Ume", Game())
-        self.assertEqual(my_emu.attack_speed(4, source="unit tests"), None)
-
+        my_emu = Emu("emu", Game())
+        self.assertEqual(my_emu.get_attack_speed(), 3)
 
     def test_Chance_To_Hit(self):
-        my_emu = Emu("Ume", Game())
-        self.assertEqual(my_emu.chance_to_hit(random.randrange(1, 20), source="unit tests"), None)
+        my_emu = Emu("emu", Game())
+        self.assertGreater(my_emu.get_chance_to_dodge(), 0.3)
 
 
 if __name__ == '__main__':
