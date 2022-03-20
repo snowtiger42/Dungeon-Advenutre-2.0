@@ -1,10 +1,6 @@
-# from abc import ABCMeta, abstractmethod
 from dungeonCharacter import DungeonCharacter
-# from mock_game import MockGame as Game
-# from healAble import HealAble
 import random
 from mockannouncement import MockAnnouncement as Announce
-
 
 
 class Monster(DungeonCharacter):
@@ -19,10 +15,10 @@ class Monster(DungeonCharacter):
 
         self.__chance_to_regenerate_min = chance_to_regenerate_min
         self.__chance_to_regenerate_max = chance_to_regenerate_max
-
         self.__chance_to_regenerate = random.uniform(self.__chance_to_regenerate_min, self.__chance_to_regenerate_max)
         self.__regenerate_amount = regenerate_amount
 
+    """getters and setters specific for monster class and it's children"""
     def get_chance_to_regenerate_min(self):
         return self.__chance_to_regenerate_min
 
@@ -45,6 +41,7 @@ class Monster(DungeonCharacter):
     def set_regenerate_amount(self, regen_amount):
         self.__regenerate_amount = regen_amount
 
+    """ability to regenerate HP"""
     def regenerate(self):
         announcement = self.announce
 
@@ -62,10 +59,9 @@ class Monster(DungeonCharacter):
                 self.set_current_hp(new_hp)
                 announcement.announce(f"{self.get_name()} Managed to regenerate! It heals {self.__regenerate_amount} HP,"
                                      f" bringing it to {new_hp}.\n")
-                # self.__game.announce_monster_stats(f"{defender}")
-                # f" bringing it to {new_hp}.")
             return True
 
+    """produces the string stats for dungeon character and monster (this will be carried over into it's children)"""
     def __str__(self):
         prefix = super().__str__()
         line1 = str(prefix[0])
@@ -78,7 +74,6 @@ class Monster(DungeonCharacter):
         regen_range_str = f"Regen Chance: {round(self.__chance_to_regenerate_min * 100)}% to " \
                           f"{round(self.__chance_to_regenerate_max * 100)}% "
         regen_amount_str = f"Regen Amount: {self.__regenerate_amount} "
-
         status_items = [line1, line2, line3, line4, line5, line6, regen_range_str, regen_amount_str]
 
         line_size = 0
@@ -110,15 +105,12 @@ class Monster(DungeonCharacter):
 
         if self.__chance_to_regenerate >= self.regen_chance_compare():
             self.regenerate()
-            announcement.announce(f"\nRegen Sucessful:\n{self.get_name()} Managed to regenerate! It heals {self.__regenerate_amount} HP, "
-                                 f"bringing {self.get_name()} to {self.get_current_hp()}.\n")
-            # self.__game.announce_monster_stats(f"{defender}")
-
-            # super().take_damage(damage, source)
-            # self.__game.announce_battle_log("\n")
+            announcement.announce(f"\nRegen Sucessful:\n{self.get_name()} Managed to regenerate! It heals "
+                                  f"{self.__regenerate_amount} HP, bringing {self.get_name()} to "
+                                  f"{self.get_current_hp()}.\n")
         else:
-            announcement.announce(f"\nRegen Failed:\n{self.get_name()} failed to regenerate! It heals {0} HP, bringing {self.get_name()} "
-                                 f"to {self.get_current_hp()}.\n")
+            announcement.announce(f"\nRegen Failed:\n{self.get_name()} failed to regenerate! It heals {0} HP, bringing "
+                                  f"{self.get_name()} to {self.get_current_hp()}.\n")
         super().take_damage(damage, source)
 
 
