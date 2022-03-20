@@ -1,6 +1,5 @@
 import random
 
-# from monster import Monster
 from phonenix import Phoenix
 from emu import Emu
 from raven import Raven
@@ -14,13 +13,8 @@ from quiz import Quiz
 class Room:
     def __init__(self, room_id, location):
         self.__diff = 1
-        # self.__game = game
         self.__monster = None
         self.__phoenix = Phoenix
-        # self.__phoenix = False
-        # if random.random() < 0.1:
-        #     self.__phoenix = True
-
         self.__emu = Emu
         self.__emu = False
         self.__raven = Raven
@@ -201,16 +195,14 @@ class Room:
         self.__game = Game
 
         if self.__exit:
-            # if self.__pillar >= len(4):
-            """put self.__phoenix"""
             war.exit()
             self.__has_player = True
             return
         if self.__pillar:
-            quiz = Quiz()
-            self.__monster = Sphinx(self.__diff, "Sphinx", Game())
             war.earn_pillar(self.__pillar)
             self.__pillar = False
+            quiz = Quiz()
+            self.__monster = Sphinx(self.__diff, "Sphinx", Game())
             quiz.start_quiz(self.__quiz_type, war, self.__monster)
         if self.__vision_p:
             war.add_vision_potion()

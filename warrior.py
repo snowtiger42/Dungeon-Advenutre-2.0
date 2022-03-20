@@ -4,7 +4,6 @@ from hero import Hero
 from mockannouncement import MockAnnouncement as Announce
 
 
-
 class Warrior(Hero):
     """
     A class the handles information for the Warrior
@@ -14,7 +13,6 @@ class Warrior(Hero):
         super().__init__(name, game, 200, 300, 30, 90, 4, .70, .80, .3, .4, .30, .5)
         self.__game = game
         self.announce = Announce()
-
 
     def special_move(self, defender):
         if self.get_current_hp() <= 0:

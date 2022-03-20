@@ -11,12 +11,12 @@ class Thief(Hero):
 
     def __init__(self, name, game):
         super().__init__(name, game, 200, 250, 30, 66, 7, .90, .99, .5, .75, .2, .25)
-        # self.__name = name
         self.__game = game
         self.announce = Announce()
 
-
+    """instantiation of clerics special move"""
     def special_move(self, defender):
+        "checks to see if opponent is dead"
         if defender.get_current_hp() <= 0:
             defender.is_dead()
 
@@ -24,6 +24,7 @@ class Thief(Hero):
         hitChance = random.uniform(.1, 1)
         damage = (self.get_attack_damage_range()) * 2
 
+        "thief's special move does double damage but at half the accuracy"
         if second_chance_to_hit >= hitChance:
             new_hp = defender.get_current_hp()
             result = new_hp - damage
@@ -37,7 +38,7 @@ class Thief(Hero):
             self.announce.announce_monster_stats(f"{defender}")
 
             return True
-
+        # "thief's special move ends up doing regular damage for a percentage"
         elif second_chance_to_hit >= hitChance / 2:
             new_hp = defender.get_current_hp()
             result = new_hp - (damage // 2)
@@ -51,6 +52,7 @@ class Thief(Hero):
                                    f"{defender.get_current_hp()}.\n")
             self.announce.announce_monster_stats(f"{defender}")
 
+        # "thief's special move has a very small chance to miss and do 0 damage"
         else:
             self.announce.announce(f"You used the Sneak Attack ability and Missed! It deals {0} damage, bringing your "
                                    f"opponent's HP to \n{defender.get_current_hp()}.\n")
